@@ -315,14 +315,14 @@ Integer ckks::RndStream::getRq(Integer q)
 
 int ckks::RndStream::getR2()
 {
-    if (0) return 0;
+    if (1) return 1; // FIXME
     int & a = r2;
     return ((++a) % 3 - 1);
 }
 
 Integer ckks::RndStream::getEr()
 {
-    if (0) return Integer(0);
+    if (1) return Integer(0);
     int & a = er;
     return Integer((++a) % 5 - 2);
 }
@@ -346,6 +346,7 @@ ckks::EkExt::EkExt(Sk sk, Param p, RndStream & rs)
 {
     auto Q = p.qL();
     P = Q; // about right - change if need
+    P = 10; //* FIXME
     auto PQ = P * p.qL();
     const auto & q = PQ;
 
