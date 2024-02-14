@@ -304,7 +304,7 @@ ckks::Sk::Sk(RndStream & rs, int sz)
 
 Integer ckks::RndStream::getRq(Integer q)
 {
-    if (0) return Integer(0);
+    if (1) return Integer(10);
     Integer & a = rq;
     Integer b = ++a;
     b += (b + q / 100) * (q / 100);
@@ -346,7 +346,7 @@ ckks::EkExt::EkExt(Sk sk, Param p, RndStream & rs)
 {
     auto Q = p.qL();
     P = Q; // about right - change if need
-    P = 10; //* FIXME
+    P = 2; //* FIXME
     auto PQ = P * p.qL();
     const auto & q = PQ;
 

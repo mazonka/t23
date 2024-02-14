@@ -134,9 +134,20 @@ poly::Poly poly::add(Poly a, Poly b, Integer q)
 
 poly::Poly poly::rescaleRound(const Poly & a, Integer idelta)
 {
+    ///auto d2 = idelta / 2;
+    ///Poly r(a);
+    ///for (auto & x : r.v) x = (x + d2) / idelta;
+    ///return r;
+
     auto d2 = idelta / 2;
     Poly r(a);
-    for (auto & x : r.v) x = (x + d2) / idelta;
+    for (auto& x : r.v)
+    {
+        if (x < 0)
+            x = -((-x + d2) / idelta);
+        else
+            x = (x + d2) / idelta;
+    }
     return r;
 }
 
