@@ -10,7 +10,7 @@ using std::cout;
 
 using poly::Poly;
 
-ckks::EkHyb::EkHyb(int lev, Sk sk, Param p, RndStream rs) : level(lev)
+ckks::EkHyb::EkHyb(int lev, Sk sk, Param p, RndStream& rs) : level(lev)
 {
     if (p.w == 0) nevers("Digit size is not set; assign size to 'w'");
     Poly s = sk.s;
@@ -141,7 +141,7 @@ ckks::Ctxt ckks::relinHyb(const Ctxt3 & c, const Param & par, const EkHyb & ek)
     auto pa = div(d2eka, ek.P, pq);
     auto pb = div(d2ekb, ek.P, pq);
     r.c0 = add(r.c0, pb, q);
-    r.c1 = add(r.c1, pb, q);
+    r.c1 = add(r.c1, pb, q); // FIXME bug
 
     return r;
 }

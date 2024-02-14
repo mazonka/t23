@@ -15,7 +15,7 @@ struct EkHyb
     int level;
     Integer P, ql;
     poly::Dpoly db, da;
-    EkHyb(int level, Sk sk, Param p, RndStream rs);
+    EkHyb(int level, Sk sk, Param p, RndStream& rs);
     string print() const;
 };
 

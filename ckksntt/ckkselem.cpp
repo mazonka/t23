@@ -85,7 +85,7 @@ std::vector<cx> ckks::decode(const Param & p, const Poly & m)
     return r;
 }
 
-ckks::Ctxt ckks::encrypt(Sk sk, Poly m, Param p, RndStream rs)
+ckks::Ctxt ckks::encrypt(Sk sk, Poly m, Param p, RndStream& rs)
 {
     auto q = p.qL();
 
@@ -108,7 +108,7 @@ ckks::Ctxt ckks::encrypt(Sk sk, Poly m, Param p, RndStream rs)
     return r;
 }
 
-ckks::Ctxt ckks::encrypt(Pk pk, Poly m, Param p, RndStream rs)
+ckks::Ctxt ckks::encrypt(Pk pk, Poly m, Param p, RndStream& rs)
 {
     // c0 = PK0*u+e1+M
     // c1 = PK1*u+e2
@@ -239,25 +239,25 @@ ckks::Ctxt ckks::relinExt(const Ctxt3 & c, const Param & par, const EkExt & ek)
     auto pa = div(d2eka, ek.P, pq);
     auto pb = div(d2ekb, ek.P, pq);
     r.c0 = add(r.c0, pb, q);
-    r.c1 = add(r.c1, pb, q); // FIXME pb???
+    r.c1 = add(r.c1, pa, q); // FIXME pb???
     return r;
 }
 
-poly::Poly ckks::genPolyRq(int n, RndStream rs, Integer q)
+poly::Poly ckks::genPolyRq(int n, RndStream &rs, Integer q)
 {
     Poly r;
     for (int i = 0; i < n; i++) r += rs.getRq(q);
     return r;
 }
 
-poly::Poly ckks::genPolyEr(int n, RndStream rs)
+poly::Poly ckks::genPolyEr(int n, RndStream &rs)
 {
     Poly r;
     for (int i = 0; i < n; i++) r += rs.getEr();
     return r;
 }
 
-poly::Poly ckks::genPolyR2(int n, RndStream rs)
+poly::Poly ckks::genPolyR2(int n, RndStream &rs)
 {
     Poly r;
     for (int i = 0; i < n; i++) r += Integer(rs.getR2());
@@ -306,9 +306,11 @@ Integer ckks::RndStream::getRq(Integer q)
 {
     if (0) return Integer(0);
     Integer & a = rq;
-    return ((++a) % q);
-    if (a <= q) a = 0;
-    return a;
+    Integer b = ++a;
+    b += (b + q / 100) * (q / 100);
+    return (b % q);
+    ///if (a <= q) a = 0;
+    ///return a;
 }
 
 int ckks::RndStream::getR2()
@@ -325,7 +327,7 @@ Integer ckks::RndStream::getEr()
     return Integer((++a) % 5 - 2);
 }
 
-ckks::Pk::Pk(Sk sk, Param p, RndStream rs) : n(sk.n)
+ckks::Pk::Pk(Sk sk, Param p, RndStream& rs) : n(sk.n)
 {
     Poly m0(sk.n, Integer(0));
     Ctxt c = encrypt(sk, m0, p, rs);
@@ -338,7 +340,7 @@ void ckks::ParamQx::forceNttValues()
     for ( auto & x : vql) x = ntt::findCloseQ(penc.n, x);
 }
 
-ckks::EkExt::EkExt(Sk sk, Param p, RndStream rs)
+ckks::EkExt::EkExt(Sk sk, Param p, RndStream& rs)
 {
     auto Q = p.qL();
     P = Q; // about right - change if need

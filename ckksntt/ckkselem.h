@@ -71,6 +71,10 @@ class RndStream
         int getR2();
         Integer getRq(Integer q);
         Integer getEr();
+
+        RndStream() {};
+        RndStream(const RndStream&) = delete;
+        RndStream& operator=(const RndStream&) = default;
 };
 
 struct Sk
@@ -94,20 +98,19 @@ struct Ctxt3 : Ctxt
     Ctxt3(const Ctxt & c01, const Poly & c2) : Ctxt(c01), c2(c2) {}
 };
 
-// FIXME RnsStream must be ref&
-poly::Poly genPolyRq(int n, RndStream rs, Integer q);
-poly::Poly genPolyEr(int n, RndStream rs);
-poly::Poly genPolyR2(int n, RndStream rs);
+poly::Poly genPolyRq(int n, RndStream &rs, Integer q);
+poly::Poly genPolyEr(int n, RndStream &rs);
+poly::Poly genPolyR2(int n, RndStream &rs);
 
 struct Pk
 {
     int n;
     poly::Poly p0, p1;
-    Pk(Sk sk, Param p, RndStream rs);
+    Pk(Sk sk, Param p, RndStream& rs);
 };
 
-Ctxt encrypt(Pk pk, poly::Poly m, Param p, RndStream rs);
-Ctxt encrypt(Sk sk, poly::Poly m, Param p, RndStream rs);
+Ctxt encrypt(Pk pk, poly::Poly m, Param p, RndStream& rs);
+Ctxt encrypt(Sk sk, poly::Poly m, Param p, RndStream& rs);
 poly::Poly decrypt(Sk sk, Ctxt c, Param p);
 poly::Poly decrypt(Sk sk, Ctxt3 c, Param p);
 
@@ -120,7 +123,7 @@ struct EkExt
 {
     Integer P;
     poly::Poly b, a;
-    EkExt(Sk sk, Param p, RndStream rs);
+    EkExt(Sk sk, Param p, RndStream& rs);
 };
 
 Ctxt mulExt(const Ctxt & a, const Ctxt & b, const Param & p, const EkExt & ek);
