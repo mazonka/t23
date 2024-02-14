@@ -85,7 +85,7 @@ std::vector<cx> ckks::decode(const Param & p, const Poly & m)
     return r;
 }
 
-ckks::Ctxt ckks::encrypt(Sk sk, Poly m, Param p, RndStream& rs)
+ckks::Ctxt ckks::encrypt(Sk sk, Poly m, Param p, RndStream & rs)
 {
     auto q = p.qL();
 
@@ -108,7 +108,7 @@ ckks::Ctxt ckks::encrypt(Sk sk, Poly m, Param p, RndStream& rs)
     return r;
 }
 
-ckks::Ctxt ckks::encrypt(Pk pk, Poly m, Param p, RndStream& rs)
+ckks::Ctxt ckks::encrypt(Pk pk, Poly m, Param p, RndStream & rs)
 {
     // c0 = PK0*u+e1+M
     // c1 = PK1*u+e2
@@ -243,21 +243,21 @@ ckks::Ctxt ckks::relinExt(const Ctxt3 & c, const Param & par, const EkExt & ek)
     return r;
 }
 
-poly::Poly ckks::genPolyRq(int n, RndStream &rs, Integer q)
+poly::Poly ckks::genPolyRq(int n, RndStream & rs, Integer q)
 {
     Poly r;
     for (int i = 0; i < n; i++) r += rs.getRq(q);
     return r;
 }
 
-poly::Poly ckks::genPolyEr(int n, RndStream &rs)
+poly::Poly ckks::genPolyEr(int n, RndStream & rs)
 {
     Poly r;
     for (int i = 0; i < n; i++) r += rs.getEr();
     return r;
 }
 
-poly::Poly ckks::genPolyR2(int n, RndStream &rs)
+poly::Poly ckks::genPolyR2(int n, RndStream & rs)
 {
     Poly r;
     for (int i = 0; i < n; i++) r += Integer(rs.getR2());
@@ -327,7 +327,7 @@ Integer ckks::RndStream::getEr()
     return Integer((++a) % 5 - 2);
 }
 
-ckks::Pk::Pk(Sk sk, Param p, RndStream& rs) : n(sk.n)
+ckks::Pk::Pk(Sk sk, Param p, RndStream & rs) : n(sk.n)
 {
     Poly m0(sk.n, Integer(0));
     Ctxt c = encrypt(sk, m0, p, rs);
@@ -337,10 +337,12 @@ ckks::Pk::Pk(Sk sk, Param p, RndStream& rs) : n(sk.n)
 
 void ckks::ParamQx::forceNttValues()
 {
+    if (ntt::disabled) return;
+
     for ( auto & x : vql) x = ntt::findCloseQ(penc.n, x);
 }
 
-ckks::EkExt::EkExt(Sk sk, Param p, RndStream& rs)
+ckks::EkExt::EkExt(Sk sk, Param p, RndStream & rs)
 {
     auto Q = p.qL();
     P = Q; // about right - change if need

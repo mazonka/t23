@@ -8,6 +8,8 @@
 
 namespace ntt
 {
+extern bool disabled;
+
 
 Integer findCloseQ(int n, Integer x);
 

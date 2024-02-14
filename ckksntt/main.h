@@ -6,7 +6,9 @@ void t01_encode();
 void t02_encSk();
 void t03_encPk();
 void t04_mul3();
+void t04_mul3_b1();
 void t05_mul2();
+void t05_mul2_b1();
 void t06_mul1();
 void t07_mul();
 

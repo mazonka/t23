@@ -5,6 +5,8 @@
 #include "poly.h"
 #include "mathut.h"
 
+bool ntt::disabled = !true;
+
 namespace g
 {
 ntt::NttMan nttman;

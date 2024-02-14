@@ -107,6 +107,8 @@ poly::Poly poly::mulmod_elwise(const Poly & a, const Poly & b, Integer q)
 
 poly::Poly poly::mulmod_btrfly(const Poly & a, const Poly & b, Integer q)
 {
+    if (ntt::disabled) return mulmod_simple(a, b, q);
+
     using namespace ntt;
     auto an = nttBfly(a, q);
     auto bn = nttBfly(b, q);

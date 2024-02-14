@@ -165,7 +165,6 @@ void t04_mul3()
     using namespace ckks;
     using namespace std::complex_literals;
     Integer delta(64);
-    ///ParamEncode paramEnc(4, delta);
     Param param(4, Integer(1024), Integer(delta), 1);
     cout << "xi =" << roundv(1e-3, param.penc.vxi) << '\n';
 
@@ -506,6 +505,169 @@ void t10_hyb2()
     Poly md2 = decrypt(sk, ca2, param);
     cout << "md2 = " << md2 << '\n';
     auto a22 = decode(param, md2);
+    cout << "a22 =" << roundv(1e-2, a22) << '\n';
+}
+
+
+void t04_mul3_b1()
+{
+    cout << "\n>>> " << __func__ << '\n';
+
+    using namespace ckks;
+    using namespace std::complex_literals;
+    Integer delta(64);
+    Param param(2, Integer(1024), Integer(delta), 1);
+    cout << "xi =" << roundv(1e-3, param.penc.vxi) << '\n';
+
+    vector<cx> a = { 3.0 };
+
+    cout << "a =" << a << '\n';
+
+    Poly ma = encode(param, a);
+
+    cout << "ma = " << ma << '\n';
+    cout << "ma decoded =" << roundv(1e-2, decode(param, ma)) << '\n';
+
+    RndStream rs;
+    Sk sk(rs, param.penc.n);
+
+    Ctxt ca = encrypt(sk, ma, param, rs);
+    cout << "ca.c0 = " << ca.c0 << '\n';
+    cout << "ca.c1 = " << ca.c1 << '\n';
+
+    {
+        Poly md = decrypt(sk, ca, param);
+        cout << "md = " << md << '\n';
+        auto a2 = decode(param, md);
+        cout << "a2 =" << roundv(1e-2, a2) << '\n';
+    }
+
+    {
+        Poly ma2 = add(ma, ma, param.q0());
+        cout << "xa2add =" << roundv(1e-2, decode(param, ma2)) << '\n';
+    }
+
+    {
+        Poly ma2 = mul_simple(ma, ma);
+        Poly ma2sc = rescaleRound(ma2, param.penc.idelta);
+        cout << "xa2mul =" << roundv(1e-2, decode(param, ma2sc)) << '\n';
+    }
+
+    {
+        Ctxt ca2 = add(ca, ca, param);
+        Poly md2 = decrypt(sk, ca2, param);
+        cout << "md2 = " << md2 << '\n';
+        auto a22 = decode(param, md2);
+        cout << "a22 =" << roundv(1e-2, a22) << '\n';
+    }
+
+    cout << '\n';
+    Ctxt3 ca3 = mul3(ca, ca, param);
+    {
+        Poly md3 = decrypt(sk, ca3, param);
+        cout << "md3 = " << md3 << '\n';
+        auto a23 = decode(param, md3);
+        cout << "a23 =" << roundv(1e-2, a23) << '\n';
+
+        Poly md3sc = rescaleRound(md3, param.penc.idelta);
+        auto a23sc = decode(param, md3sc);
+        cout << "a23sc =" << roundv(1e-2, a23sc) << '\n';
+    }
+
+    cout << '\n';
+    {
+        Ctxt3 ca3sc = rescale(ca3, param.penc.idelta);
+        Poly md3s = decrypt(sk, ca3sc, param);
+        cout << "md3s = " << md3s << '\n';
+        auto a23s = decode(param, md3s);
+        cout << "a23s =" << roundv(1e-2, a23s) << '\n';
+    }
+}
+
+
+void t05_mul2_b1()
+{
+    cout << "\n>>> " << __func__ << '\n';
+
+    struct Nttoff
+    {
+        bool oldval;
+        Nttoff() : oldval(ntt::disabled) { ntt::disabled = true; }
+        ~Nttoff() { ntt::disabled = oldval; }
+    } nttoff;
+
+
+    using namespace ckks;
+    using namespace std::complex_literals;
+
+    Integer delta(64);
+    Param param2(2, Integer(1024), Integer(delta), 1);
+    Param param1(1, Integer(1024), Integer(delta), 1);
+
+    vector<cx> a = { 3.0 };
+
+    cout << "a =" << a << '\n';
+
+    Poly ma0 = encode(param2, a);
+    Poly ma; ma += ma0.v[0];
+
+    if (0)
+    {
+        ma.v[0] = ma.v[1] = ma.v[2] = ma.v[3] = Integer(0);
+        ma.v[0] = Integer(100);
+        cout << "ma xx = " << ma << '\n';
+        auto a2 = decode(param2, ma);
+        cout << "a2 xx = " << roundv(1e-16, a2) << '\n';
+        return;
+    }
+
+    cout << "ma = " << ma << '\n';
+
+    RndStream rs;
+    Sk sk(rs, param1.penc.n);
+
+    Ctxt ca = encrypt(sk, ma, param1, rs);
+    cout << "ca.c0 = " << ca.c0 << '\n';
+    cout << "ca.c1 = " << ca.c1 << '\n';
+
+    {
+        Poly md = decrypt(sk, ca, param1);
+        cout << "md = " << md << '\n';
+        Poly md0 = md; md0 += Integer(0);
+        auto a2 = decode(param2, md0);
+        cout << "a2 =" << roundv(1e-2, a2) << '\n';
+    }
+
+    Ctxt3 ca3 = mul3(ca, ca, param1);
+
+    {
+        Poly md3 = decrypt(sk, ca3, param1);
+        cout << "md3 = " << md3 << '\n';
+        Poly md30 = md3; md30 += Integer(0);
+        auto a23 = decode(param2, md30);
+        cout << "a23 =" << roundv(1e-2, a23) << '\n';
+
+        Poly md3sc = rescaleRound(md3, param1.penc.idelta);
+        Poly md3sc0 = md3sc; md3sc0 += Integer(0);
+        auto a23sc = decode(param2, md3sc0);
+        cout << "a23sc =" << roundv(1e-2, a23sc) << '\n';
+    }
+
+    cout << "ca3.c0 = " << ca3.c0 << '\n';
+    cout << "ca3.c1 = " << ca3.c1 << '\n';
+    cout << "ca3.c2 = " << ca3.c2 << '\n';
+    EkExt ek(sk, param1, rs);
+    Ctxt ca2 = relinExt(ca3, param1, ek);
+    cout << "ca2.c0 = " << ca2.c0 << '\n';
+    cout << "ca2.c1 = " << ca2.c1 << '\n';
+    Ctxt ca2sc = rescale(ca2, param1.penc.idelta);
+    cout << "ca2sc.c0 = " << ca2sc.c0 << '\n';
+    cout << "ca2sc.c1 = " << ca2sc.c1 << '\n';
+
+    Poly md2 = decrypt(sk, ca2sc, param1);
+    cout << "md2 = " << md2 << '\n';
+    Poly md20 = md2; md20 += Integer(0);
+    auto a22 = decode(param2, md20);
     cout << "a22 =" << roundv(1e-2, a22) << '\n';
 }
 
