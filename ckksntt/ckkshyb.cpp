@@ -134,15 +134,16 @@ ckks::Ctxt ckks::relinHyb(const Ctxt3 & c, const Param & par, const EkHyb & ek)
     auto P = ek.P;
     Integer pq = P * q;
 
-    auto d2 = scaleUp(c.c2, q, P, pq);
+    //auto d2 = scaleUp(c.c2, q, P, pq);
+    auto d2 = rangeUp(c.c2, q);
+
     poly::Dpoly wd2 = poly::WD(d2, w, pq);
     auto d2eka = poly::dot(wd2, ek.da, pq);
     auto d2ekb = poly::dot(wd2, ek.db, pq);
     auto pa = div(d2eka, ek.P, pq);
     auto pb = div(d2ekb, ek.P, pq);
     r.c0 = add(r.c0, pb, q);
-    r.c1 = add(r.c1, pb, q); // FIXME bug
-    never;
+    r.c1 = add(r.c1, pa, q);
 
     return r;
 }

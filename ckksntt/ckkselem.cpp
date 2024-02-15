@@ -233,13 +233,15 @@ ckks::Ctxt ckks::relinExt(const Ctxt3 & c, const Param & par, const EkExt & ek)
     Integer q = par.q(c.level);
     Integer pq = ek.P * q;
 
-    auto d2 = scaleUp(c.c2, q, ek.P, pq);
+    //auto d2 = scaleUp(c.c2, q, ek.P, pq);
+    auto d2 = rangeUp(c.c2, q);
+
     auto d2eka = mul(d2, ek.a, pq);
     auto d2ekb = mul(d2, ek.b, pq);
     auto pa = div(d2eka, ek.P, pq);
     auto pb = div(d2ekb, ek.P, pq);
     r.c0 = add(r.c0, pb, q);
-    r.c1 = add(r.c1, pa, q); // FIXME pb???
+    r.c1 = add(r.c1, pa, q);
     return r;
 }
 
@@ -304,7 +306,7 @@ ckks::Sk::Sk(RndStream & rs, int sz)
 
 Integer ckks::RndStream::getRq(Integer q)
 {
-    if (1) return Integer(100);
+    if (0) return Integer(100);
     Integer & a = rq;
     Integer b = ++a;
     b += (b + q / 100) * (q / 100);
@@ -315,14 +317,14 @@ Integer ckks::RndStream::getRq(Integer q)
 
 int ckks::RndStream::getR2()
 {
-    if (1) return 1; // FIXME
+    if (0) return 1; // FIXME
     int & a = r2;
     return ((++a) % 3 - 1);
 }
 
 Integer ckks::RndStream::getEr()
 {
-    if (1) return Integer(0);
+    if (0) return Integer(0);
     int & a = er;
     return Integer((++a) % 5 - 2);
 }
@@ -346,7 +348,7 @@ ckks::EkExt::EkExt(Sk sk, Param p, RndStream & rs)
 {
     auto Q = p.qL();
     P = Q; // about right - change if need
-    P = 2; //* FIXME
+    ///P = 2; //* FIXME del
     auto PQ = P * p.qL();
     const auto & q = PQ;
 

@@ -604,7 +604,7 @@ void t05_mul2_b1_v1()
     Param param1(1, Integer(1024), Integer(delta), 1);
     //Param param = param2;
 
-    vector<cx> a = { 0.0 };
+    vector<cx> a = { 3.0 };
 
     cout << "a =" << a << '\n';
 
@@ -694,7 +694,7 @@ void t05_mul2_b1()
     //Param param1(1, Integer(1024), Integer(delta), 1);
     Param param = param2;
 
-    vector<cx> a = { 1.0 };
+    vector<cx> a = { 3.0 };
 
     cout << "a =" << a << '\n';
 

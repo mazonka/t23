@@ -141,7 +141,7 @@ poly::Poly poly::rescaleRound(const Poly & a, Integer idelta)
 
     auto d2 = idelta / 2;
     Poly r(a);
-    for (auto& x : r.v)
+    for (auto & x : r.v)
     {
         if (x < 0)
             x = -((-x + d2) / idelta);

@@ -25,13 +25,12 @@ try
     if (1)
     {
         //t04_mul3_b1();
-        t05_mul2_b1();
-        return 0;
         t00_ntt();
         t01_encode();
         t02_encSk();
         t03_encPk();
         t04_mul3();
+        t05_mul2_b1();
         t05_mul2();
         t06_mul1();
         t07_mul();
