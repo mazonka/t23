@@ -24,7 +24,7 @@ try
 
     if (1)
     {
-        t04_mul3_b1();
+        //t04_mul3_b1();
         t05_mul2_b1();
         return 0;
         t00_ntt();

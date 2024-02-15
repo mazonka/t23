@@ -304,7 +304,7 @@ ckks::Sk::Sk(RndStream & rs, int sz)
 
 Integer ckks::RndStream::getRq(Integer q)
 {
-    if (1) return Integer(10);
+    if (1) return Integer(100);
     Integer & a = rq;
     Integer b = ++a;
     b += (b + q / 100) * (q / 100);
