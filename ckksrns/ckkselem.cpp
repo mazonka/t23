@@ -472,13 +472,15 @@ ckks::CtxtP ckks::relinExt(const Ctxt3P & c, const Param & par, const EkExtP & e
     Integer q = par.q_(c.level);
     Integer pq = ek.P * q;
 
-    auto d2 = scaleUp(c.c2, q, ek.P, pq);
+    //auto d2 = scaleUp(c.c2, q, ek.P, pq);
+    auto d2 = rangeUpP(c.c2, q);
+
     auto d2eka = mul(d2, ek.a, pq);
     auto d2ekb = mul(d2, ek.b, pq);
     auto pa = div(d2eka, ek.P, pq);
     auto pb = div(d2ekb, ek.P, pq);
     r.c0 = add(r.c0, pb, q);
-    r.c1 = add(r.c1, pb, q); // FIXME WTF pb or pa
+    r.c1 = add(r.c1, pa, q);
     return r;
 }
 
@@ -486,21 +488,21 @@ ckks::CtxtR ckks::relinExt(const Ctxt3R & c, const Param & par, const EkExtR & e
 {
     CtxtR r = c; // slice object
 
-    never;
-    //Integer q = par.q_(c.level);
-    //Integer pq = ek.P * q;
+    ///never;
+    ///Integer q = par.q_(c.level);
+    ///Integer pq = ek.P * q;
 
     //auto d2 = scaleUp(c.c2, q, ek.P, pq);
     const auto & rext = *ek.a.rns_ptr;
     auto d2 = c.c2.rebase(rext);
     auto d2eka = mul(d2, ek.a);
     auto d2ekb = mul(d2, ek.b);
-    //auto pa = div(d2eka, ek.P, pq);
-    //auto pb = div(d2ekb, ek.P, pq);
+    ///auto pa = div(d2eka, ek.P, pq);
+    ///auto pb = div(d2ekb, ek.P, pq);
     auto pa = d2eka.shrink(ek.rshrink);
     auto pb = d2ekb.shrink(ek.rshrink);
     r.c0 = add(r.c0, pb);
-    r.c1 = add(r.c1, pb); never;
+    r.c1 = add(r.c1, pa);
     return r;
 }
 
@@ -622,9 +624,12 @@ Integer ckks::RndStream::getRq(Integer q)
 {
     if (0) return Integer(0);
     Integer & a = rq;
-    return ((++a) % q);
-    if (a <= q) a = 0;
-    return a;
+    ///return ((++a) % q);
+    ///if (a <= q) a = 0;
+    ///return a;
+    Integer b = ++a;
+    b += (b + q / 100) * (q / 10);
+    return (b % q);
 }
 
 int ckks::RndStream::getR2()
