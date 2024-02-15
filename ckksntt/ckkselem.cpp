@@ -317,7 +317,7 @@ Integer ckks::RndStream::getRq(Integer q)
 
 int ckks::RndStream::getR2()
 {
-    if (0) return 1; // FIXME
+    if (0) return 1;
     int & a = r2;
     return ((++a) % 3 - 1);
 }
@@ -348,7 +348,6 @@ ckks::EkExt::EkExt(Sk sk, Param p, RndStream & rs)
 {
     auto Q = p.qL();
     P = Q; // about right - change if need
-    ///P = 2; //* FIXME del
     auto PQ = P * p.qL();
     const auto & q = PQ;
 
