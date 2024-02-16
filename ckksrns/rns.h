@@ -102,6 +102,7 @@ class RnsForm
         RnsForm operator/(Integer b) const { return *this / RnsForm(prns, b); }
         RnsForm operator%(Integer b) const { return *this % RnsForm(prns, b); }
         void divABRQ(const RnsForm & a, const RnsForm & b, RnsForm * r, RnsForm * q) const;
+        bool operator<(const RnsForm& b) const;
 
         RnsForm operator-() const;
         RnsForm & operator-=(const rns_ns::RnsForm & b) { return *this += -b; }

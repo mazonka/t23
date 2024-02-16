@@ -264,7 +264,25 @@ rns_ns::RnsForm & rns_ns::RnsForm::operator+=(const rns_ns::RnsForm & b)
 
 void rns_ns::RnsForm::divABRQ(const RnsForm & a, const RnsForm & b, RnsForm * r, RnsForm * q) const
 {
+    // this is slow
+    if (a < b)
+    {
+
+    }
     never;
+}
+
+bool rns_ns::RnsForm::operator<(const RnsForm& b) const
+{
+    vint am = prns->mrs(v);
+    vint bm = prns->mrs(b.v);
+    int sz = am.size();
+    for (int i = sz - 1; i >= 0; i--)
+    {
+        if (am[i] < bm[i]) return true;
+        if (bm[i] < am[i]) return false;
+    }
+    return false;
 }
 
 rns_ns::RnsForm rns_ns::RnsForm::operator-() const

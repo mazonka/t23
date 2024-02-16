@@ -21,6 +21,17 @@ using poly::PolyRns;
 int main()
 try
 {
+    if (1)// test comparison
+    {
+        rns_ns::RnsMrs rns{ 17, 13, 11 };
+            rns_ns::RnsForm a(rns, 100), b(rns, 200);
+            if (a < b)
+                std::ignore = a;
+            if (a < a)
+                std::ignore = a;
+            if (b < a)
+                std::ignore = a;
+    }
 
     if (1)
     {
@@ -446,6 +457,17 @@ void t04_mul3()
     cout << "a =" << a << '\n';
 
     rns_ns::RnsMrs rns { 1033, 1009 };
+    if (1) // test comparison
+    {
+        rns_ns::RnsForm a(rns, 1), b(rns, 2);
+        if (a < b)
+            never;
+        if (a < a)
+            never;
+        if (b < a)
+            never;
+    }
+
     Poly map = encodeP(param, a);
     PolyRns mar = encodeR(param, a, rns);
 
