@@ -231,7 +231,7 @@ void cmain()
 
     if (1)
     {
-        Rns rns({13, 15, 17, 19});
+        //Rns rns({13, 15, 17, 19});
         //Rns rns({11, 5, 7});
         //Rns rns({3, 5, 7});
         //const int x = 11, y = 13, z = 15;
@@ -239,7 +239,7 @@ void cmain()
         //const int x = 17, y = 23, z = 29;
         //Rns rns({17, 23, 29});
         //Rns rns({5, 7, 11});
-        //Rns rns({7, 9});
+        Rns rns({7, 9});
 
         int sz = (int)rns.qs.size();
 
