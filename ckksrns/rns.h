@@ -92,9 +92,16 @@ class RnsForm
 
         int operator+=(const vint & b); // returns number of oveflows
         RnsForm & operator+=(const rns_ns::RnsForm & b);
-        RnsForm operator+(const rns_ns::RnsForm & b) const { RnsForm t = *this;  return t += b; }
-        RnsForm & operator*=(const rns_ns::RnsForm & b);
-        RnsForm operator*(const rns_ns::RnsForm & b) const { RnsForm t = *this;  return t *= b; }
+        RnsForm operator+(const RnsForm & b) const { RnsForm t = *this;  return t += b; }
+        RnsForm & operator*=(const RnsForm & b);
+        RnsForm operator*(const RnsForm & b) const { RnsForm t = *this;  return t *= b; }
+
+        //RnsForm& operator/=(const rns_ns::RnsForm& b);
+        RnsForm operator/(const RnsForm & b) const { RnsForm q(prns, 0); divABRQ(*this, b, nullptr, &q); return q; }
+        RnsForm operator%(const RnsForm & b) const { RnsForm r(prns, 0); divABRQ(*this, b, &r, nullptr); return r; }
+        RnsForm operator/(Integer b) const { return *this / RnsForm(prns, b); }
+        RnsForm operator%(Integer b) const { return *this % RnsForm(prns, b); }
+        void divABRQ(const RnsForm & a, const RnsForm & b, RnsForm * r, RnsForm * q) const;
 
         RnsForm operator-() const;
         RnsForm & operator-=(const rns_ns::RnsForm & b) { return *this += -b; }

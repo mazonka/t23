@@ -73,7 +73,7 @@ class RndStream
 
     public:
         int getR2();
-        Integer getRq(Integer q);
+        Integer getRqSeed();
         Integer getEr();
 
         RndStream() {};
@@ -134,6 +134,8 @@ poly::PolyRns genPolyErR(int n, RndStream & rs, const rns_ns::Rns & r);
 poly::PolyRns genPolyR2R(int n, RndStream & rs, const rns_ns::Rns & r);
 
 rns_ns::RnsForm getRqRns(RndStream & rs, const rns_ns::RnsForm & q);
+Integer getRq(RndStream & rs, Integer q);
+
 
 struct PkP
 {

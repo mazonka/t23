@@ -262,6 +262,11 @@ rns_ns::RnsForm & rns_ns::RnsForm::operator+=(const rns_ns::RnsForm & b)
     return *this;
 }
 
+void rns_ns::RnsForm::divABRQ(const RnsForm & a, const RnsForm & b, RnsForm * r, RnsForm * q) const
+{
+    never;
+}
+
 rns_ns::RnsForm rns_ns::RnsForm::operator-() const
 {
     if (!prns) never;

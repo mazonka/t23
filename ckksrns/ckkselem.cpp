@@ -509,7 +509,7 @@ ckks::CtxtR ckks::relinExt(const Ctxt3R & c, const Param & par, const EkExtR & e
 poly::Poly ckks::genPolyRqP(int n, RndStream & rs, Integer q)
 {
     Poly r;
-    for (int i = 0; i < n; i++) r += rs.getRq(q);
+    for (int i = 0; i < n; i++) r += getRq(rs, q);
     return r;
 }
 
@@ -552,28 +552,40 @@ poly::PolyRns ckks::genPolyR2R(int n, RndStream & rs, const rns_ns::Rns & rns)
 
 rns_ns::RnsForm ckks::getRqRns(RndStream & rs, const rns_ns::RnsForm & fq)
 {
-    // FIXME this function is a mess
-    // need simple algorithm
+    using rns_ns::RnsForm;
 
-    auto vs = fq.values();
-    Integer q0(0);
-    if (fq.islowval() && fq.lowval() == 0)
-        for ( int i = 0; i < fq.size(); i++ )
-            q0 = vs[i] = fq.rns()->q(i);
-
-    vint vr;
-    if (q0 == 0)
+    if (0) // old code
     {
-        Integer sum = 0;
-        for (auto q : vs) sum += q;
-        auto b = rs.getRq(sum);
-        for (auto q : vs) vr.push_back(b);
-        return rns_ns::RnsForm(fq.rns(), vr);
+        // FIXME this function is a mess
+        // need simple algorithm
+
+        //auto vs = fq.values();
+        //Integer q0(0);
+        //if (fq.islowval() && fq.lowval() == 0)
+        //    for (int i = 0; i < fq.size(); i++)
+        //        q0 = vs[i] = fq.rns()->q(i);
+
+        //vint vr;
+        //if (q0 == 0)
+        //{
+        //    Integer sum = 0;
+        //    for (auto q : vs) sum += q;
+        //    auto b = rs.getRq(sum);
+        //    for (auto q : vs) vr.push_back(b);
+        //    return rns_ns::RnsForm(fq.rns(), vr);
+        //}
+
+        //// this is incorrect, but we need only one call to getRq
+        //// to match non-rns computation. It can be changed later.
+        //return rns_ns::RnsForm(fq.rns(), rs.getRq(q0));
     }
 
-    // this is incorrect, but we need only one call to getRq
-    // to match non-rns computation. It can be changed later.
-    return rns_ns::RnsForm(fq.rns(), rs.getRq(q0));
+    auto rns = fq.rns();
+    if (0) return RnsForm(rns, 0);
+    Integer b = rs.getRqSeed();
+    RnsForm fb(rns, b);
+    fb += (fb + fq / Integer { 100 }) * (fq / Integer { 10 });
+    return (fb % fq);
 }
 
 double roundd(double prec, double x)
@@ -620,14 +632,18 @@ ckks::SkR::SkR(RndStream & rs, int sz, const rns_ns::Rns & rns):
     ///s = genPolyR2R(n, rs);
 }
 
-Integer ckks::RndStream::getRq(Integer q)
+Integer ckks::RndStream::getRqSeed()
 {
     if (0) return Integer(0);
     Integer & a = rq;
-    ///return ((++a) % q);
-    ///if (a <= q) a = 0;
-    ///return a;
     Integer b = ++a;
+    return b;
+}
+
+Integer ckks::getRq(RndStream & rs, Integer q)
+{
+    if (0) return Integer(0);
+    Integer b = rs.getRqSeed();
     b += (b + q / 100) * (q / 10);
     return (b % q);
 }
@@ -738,7 +754,7 @@ string ckks::Param::print() const
 
 ckks::EkExtR::EkExtR(SkR sk, Param p, RndStream & rs, rns_ns::Rns & rext,
                      rns_ns::RnsShrinkRound rshr)
-    : b(sk.s.rns_ptr), a(sk.s.rns_ptr), rshrink(rshr)
+    : P { 0 }, b(sk.s.rns_ptr), a(sk.s.rns_ptr), rshrink(rshr)
 {
     //auto Q = p.qL_();
     //P = Q; // about right - change if need
