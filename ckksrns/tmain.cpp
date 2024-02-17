@@ -86,7 +86,7 @@ void t05_mul2()
     c2prn("ca2r", ca2r);
 
     CtxtP ca2scP = rescale(ca2p, param.penc.idelta, param);
-    c2prn("ca2scP", ca2scP);
+    c2prn("ca2scP", ca2scP); // HERE FIXME
 
     Poly md2p = decryptP(skp, ca2scP, param);
     cout << "md2p = " << md2p << '\n';

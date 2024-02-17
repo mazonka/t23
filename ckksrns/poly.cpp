@@ -299,6 +299,18 @@ poly::PolyRns poly::PolyRns::rebase(const rns_ns::Rns & nr) const
     return r;
 }
 
+// same as rebase but treats negatives
+poly::PolyRns poly::PolyRns::modswap(const rns_ns::Rns & nr) const
+{
+    PolyRns r(nr);
+    int sz = polysize();
+
+    for (int i = 0; i < sz; i++)
+        r += rnsForm(i).baseSwap(nr);
+
+    return r;
+}
+
 poly::PolyRns poly::PolyRns::shrink(const rns_ns::RnsShrinkRound & rshr) const
 {
     const rns_ns::Rns & nr = rshr.Q;

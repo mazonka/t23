@@ -23,17 +23,17 @@ try
 {
     if (1)
     {
-        t01_rns1();
-        t02_rns2();
-        t03_rns3();
-        t04_rns4();
-        //t04_rnsYes1();
-        t05_rebase();
-        t00_ntt();
-        t01_encode();
-        t02_encSk();
-        t03_encPk();
-        //t04_mul3(); // FIXME wrong results in here
+        //t01_rns1();
+        //t02_rns2();
+        //t03_rns3();
+        //t04_rns4();
+        /////t04_rnsYes1();
+        //t05_rebase();
+        //t00_ntt();
+        //t01_encode();
+        //t02_encSk();
+        //t03_encPk();
+        /////t04_mul3(); // FIXME wrong results in here
         t05_mul2();
         //    t06_mul1();
         //    t07_mul();
@@ -139,7 +139,7 @@ void t04_rns4()
     cout << "\n>>> " << __func__ << '\n';
     using rns_ns::RnsForm;
 
-    rns_ns::RnsMrs rns{ 5, 7 };
+    rns_ns::RnsMrs rns { 5, 7 };
     Integer dyn = rns.dynrange_();
     for (int i = 0; i < dyn; i++)
     {

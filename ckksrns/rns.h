@@ -77,6 +77,8 @@ class RnsForm
         const Rns * rns() const { return prns; }
         Integer lowval() const { if (!prns) never; return prns->lowval(v); }
         bool islowval() const { if (!prns) never; return prns->islowval(v); }
+        bool isnegative() const;
+
         RnsForm pow2div(int pow2) const
         {
             if (!prns) never;
@@ -89,6 +91,7 @@ class RnsForm
         double blendDbl(bool recenter) const { return prns->blendDbl(v, recenter); }
         RnsForm div2exact() const { auto r = *this; prns->div2exact(r.v); return r; }
         RnsForm invert() const;
+        RnsForm negate() const;
         void setM();
 
         int operator+=(const vint & b); // returns number of oveflows
@@ -97,20 +100,23 @@ class RnsForm
         RnsForm & operator*=(const RnsForm & b);
         RnsForm operator*(const RnsForm & b) const { RnsForm t = *this;  return t *= b; }
 
-        //RnsForm& operator/=(const rns_ns::RnsForm& b);
+        RnsForm & operator/=(const rns_ns::RnsForm & b) { auto & a = *this;  a = a / b; return a; }
         RnsForm operator/(const RnsForm & b) const { return divABRQ(*this, b).second; }
         RnsForm operator%(const RnsForm & b) const { return divABRQ(*this, b).first; }
         ///void divABRQ(const RnsForm& a, const RnsForm& b, RnsForm* r, RnsForm* q) const;
-        std::pair<RnsForm, RnsForm> divABRQ(const RnsForm& a, const RnsForm& b) const;
-        std::pair<RnsForm, RnsForm> divABRQ_rec(const RnsForm& a, const RnsForm& b) const;
-        bool operator<(const RnsForm& b) const;
-        bool operator>=(const RnsForm& b) const { return !(*this < b); }
+        std::pair<RnsForm, RnsForm> divABRQ(const RnsForm & a, const RnsForm & b) const;
+        std::pair<RnsForm, RnsForm> divABRQ_rec(const RnsForm & a, const RnsForm & b) const;
+        bool operator<(const RnsForm & b) const;
+        bool operator>=(const RnsForm & b) const { return !(*this < b); }
 
         RnsForm operator/(Integer b) const { return *this / RnsForm(prns, b); }
         RnsForm operator%(Integer b) const { return *this % RnsForm(prns, b); }
-        RnsForm& operator+=(Integer b) { return operator+=(RnsForm(prns,b));  }
+        RnsForm & operator+=(Integer b) { return operator+=(RnsForm(prns, b)); }
+        RnsForm & operator-=(Integer b) { return operator-=(RnsForm(prns, b)); }
+        RnsForm & operator*=(Integer b) { return operator*=(RnsForm(prns, b)); }
+        RnsForm & operator/=(Integer b) { return operator/=(RnsForm(prns, b)); }
         RnsForm operator+(Integer b) const { return operator+(RnsForm(prns, b)); }
-        RnsForm& operator*=(Integer b) { return operator*=(RnsForm(prns, b)); }
+        ///RnsForm& operator*=(Integer b) { return operator*=(RnsForm(prns, b)); }
         RnsForm operator*(Integer b) const { return operator*(RnsForm(prns, b)); }
 
         RnsForm operator-() const;
@@ -126,6 +132,7 @@ class RnsForm
         bool operator!=(const RnsForm & b) const { return !(*this == b); }
 
         RnsForm rebaseAny(const Rns & newRns) const;
+        RnsForm baseSwap(const Rns & newRns) const;
         RnsForm rebaseCut(const Rns & newRns) const; // ABCDE -> ABC
         RnsForm rebaseAdd(const Rns & newRns) const // ABC -> ABCDE
         {

@@ -91,6 +91,7 @@ struct PolyRns
     bool match(const PolyRns & b) const;
 
     PolyRns rebase(const rns_ns::Rns & nr) const;
+    PolyRns modswap(const rns_ns::Rns & nr) const;
     PolyRns shrink(const rns_ns::RnsShrinkRound & rshr) const;
 };
 

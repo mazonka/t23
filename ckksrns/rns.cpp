@@ -226,6 +226,13 @@ rns_ns::RnsForm::RnsForm(const Rns & r, int zero, vint vs) : prns(&r)
     v = a.values();
 }
 
+bool rns_ns::RnsForm::isnegative() const
+{
+    auto x = *this * Integer { 2 };
+    if (x < *this) return true;
+    return false;
+}
+
 rns_ns::RnsForm rns_ns::RnsForm::invert() const
 {
     RnsForm r(*this);
@@ -239,11 +246,18 @@ rns_ns::RnsForm rns_ns::RnsForm::invert() const
     return r;
 }
 
+rns_ns::RnsForm rns_ns::RnsForm::negate() const
+{
+    RnsForm r = *this;
+    r.v = prns->neg(v);
+    return r;
+}
+
 // set 0 to M
 void rns_ns::RnsForm::setM()
 {
     if (!islowval()) return;
-    if (lowval() != Integer{ 0 }) return;
+    if (lowval() != Integer { 0 }) return;
     v = prns->getQs();
 }
 
@@ -274,15 +288,15 @@ std::pair<rns_ns::RnsForm, rns_ns::RnsForm> rns_ns::RnsForm::divABRQ(const RnsFo
 {
     // slow
     if (a < b)
-        return { a, RnsForm(a.prns,0) };
+        return { a, RnsForm(a.prns, 0) };
 
-    if (b.islowval() && b.lowval() == Integer{ 0 }) 
+    if (b.islowval() && b.lowval() == Integer { 0 })
         nevers("division by 0");
 
     return divABRQ_rec(a, b);
 }
 
-std::pair<rns_ns::RnsForm, rns_ns::RnsForm> rns_ns::RnsForm::divABRQ_rec(const RnsForm& a, const RnsForm& b) const
+std::pair<rns_ns::RnsForm, rns_ns::RnsForm> rns_ns::RnsForm::divABRQ_rec(const RnsForm & a, const RnsForm & b) const
 {
     // we assume that b<=a
 
@@ -290,13 +304,13 @@ std::pair<rns_ns::RnsForm, rns_ns::RnsForm> rns_ns::RnsForm::divABRQ_rec(const R
         if (a < b) never;
 
     RnsForm f0(a.prns, 0), f1(a.prns, 1), f2(a.prns, 2);
-    Integer i2{ 2 };
+    Integer i2 { 2 };
 
-    if( a==b ) return { f0, f1 };
+    if ( a == b ) return { f0, f1 };
 
     auto c = a - b;
-    if( c == b ) return { f0, f2 };
-    if( c < b )  return { c, f1 };
+    if ( c == b ) return { f0, f2 };
+    if ( c < b )  return { c, f1 };
 
     auto b2 = b * i2;
     auto [R, Q] = divABRQ_rec(a, b2);
@@ -304,12 +318,12 @@ std::pair<rns_ns::RnsForm, rns_ns::RnsForm> rns_ns::RnsForm::divABRQ_rec(const R
     if (R >= b)
     {
         R -= b;
-        Q += Integer{ 1 };
+        Q += Integer { 1 };
     }
-    return { R,Q };
+    return { R, Q };
 }
 
-bool rns_ns::RnsForm::operator<(const RnsForm& b) const
+bool rns_ns::RnsForm::operator<(const RnsForm & b) const
 {
     vint am = prns->mrs(v);
     vint bm = prns->mrs(b.v);
@@ -343,6 +357,16 @@ rns_ns::RnsForm rns_ns::RnsForm::rebaseAny(const Rns & nr) const
         r *= RnsForm(nr, nqs[i]);
         r += RnsForm(nr, mr[i]);
     }
+    return r;
+}
+
+rns_ns::RnsForm rns_ns::RnsForm::baseSwap(const Rns & newRns) const
+{
+    bool neg = isnegative();
+    auto r = *this;
+    if (neg) r = r.negate();
+    r = r.rebaseAny(newRns);
+    if (neg) r = r.negate();
     return r;
 }
 
