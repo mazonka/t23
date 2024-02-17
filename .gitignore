@@ -49,3 +49,4 @@ ckksrns/vs22/.vs/vs/v17/.suo
 *.db-wal
 *.opendb
 g_sync.bat
+*.tmp
