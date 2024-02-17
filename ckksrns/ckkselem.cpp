@@ -640,12 +640,37 @@ Integer ckks::RndStream::getRqSeed()
     return b;
 }
 
-Integer ckks::getRq(RndStream & rs, Integer q)
+Integer ckks::getRq(RndStream & rs, Integer q0)
 {
     if (0) return Integer(0);
-    Integer b = rs.getRqSeed();
-    b += (b + q / 100) * (q / 10);
-    return (b % q);
+    Integer b0 = rs.getRqSeed();
+    //b += (b + q0 / 100) * (q0 / 10);
+    //return (b % q0);
+
+
+    if (0) // new version
+    {
+        auto q1 = q0;
+        auto b1 = b0;
+        q1 -= 1;
+        q1 /= 8;
+        q1 += b1;
+        b1 += b1 * q1;
+        b1 = b1 % q0;
+        std::ignore = b1;
+        return b1;
+    }
+    else // old version
+    {
+        auto q2 = q0;
+        auto b2 = b0;
+        b2 += (b2 + q2 / 100) * (q2 / 10);
+        //b2 += b2/1324; // 1324-bad 1325-ok - poly 4
+        b2 += b2 * 165; // poly 2 (165,170)
+        b2 %= q0;
+        return b2;
+    }
+
 }
 
 int ckks::RndStream::getR2()

@@ -36,10 +36,12 @@ void t05_mul2()
     using rns_ns::RnsMrs;
 
     Integer delta(64);
-    Param param(4, Integer(1024), Integer(delta), 1);
+    //Param param(4, Integer(1024), Integer(delta), 1);
+    Param param(2, Integer(1024), Integer(delta), 1);
     cout << param.print() << '\n';
 
-    vector<cx> a = { 3.0, 2.0 };
+    //vector<cx> a = { 3.0, 2.0 };
+    vector<cx> a = { 0.0 };
     //vector<cx> a = { 1.0, 0.0 };
     //vector<cx> a = { 1.5625, 1.5625 };
 
