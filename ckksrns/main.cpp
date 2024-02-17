@@ -35,16 +35,16 @@ try
 
     if (1)
     {
-        t01_rns1();
-        t02_rns2();
-        t03_rns3();
-        //t04_rnsYes1();
-        t05_rebase();
-        t00_ntt();
-        t01_encode();
-        t02_encSk();
-        t03_encPk();
-        t04_mul3();
+        //t01_rns1();
+        //t02_rns2();
+        //t03_rns3();
+        ////t04_rnsYes1();
+        //t05_rebase();
+        //t00_ntt();
+        //t01_encode();
+        //t02_encSk();
+        //t03_encPk();
+        //t04_mul3();
         t05_mul2();
         //    t06_mul1();
         //    t07_mul();

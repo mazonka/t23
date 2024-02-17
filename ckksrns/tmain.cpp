@@ -65,20 +65,20 @@ void t05_mul2()
     };
 
     CtxtP cap = encryptP(skp, map, param, rsP);
-    CtxtR car = encryptR(skr, mar, param, rsR);
+    //CtxtR car = encryptR(skr, mar, param, rsR);
     c2prn("cap", cap);
-    c2prn("car", car);
+    //c2prn("car", car);
 
     Ctxt3P ca3p = mul3(cap, cap, param);
     c3prn("ca3p", ca3p);
-    Ctxt3R ca3r = mul3(car, car);
-    c3prn("ca3r", ca3r);
+    //Ctxt3R ca3r = mul3(car, car);
+    //c3prn("ca3r", ca3r);
 
     RnsMrs rnsP { 521, 457 };
     EkExtP ekp(skp, param, rsP, rnsP.dynrange_());
     RnsMrs rnsext { rns, rns_ns::Rns::plus, rnsP };
     rns_ns::RnsShrinkRound rshrink(rns, rnsP);
-    EkExtR ekr(skr, param, rsR, rnsext, rshrink);
+    //EkExtR ekr(skr, param, rsR, rnsext, rshrink);
 
     CtxtP ca2p = relinExt(ca3p, param, ekp);
     //CtxtR ca2r = relinExt(ca3r, param, ekr);
