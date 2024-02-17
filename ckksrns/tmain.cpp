@@ -81,9 +81,9 @@ void t05_mul2()
     EkExtR ekr(skr, param, rsR, rnsext, rshrink);
 
     CtxtP ca2p = relinExt(ca3p, param, ekp);
-    //CtxtR ca2r = relinExt(ca3r, param, ekr);
+    CtxtR ca2r = relinExt(ca3r, param, ekr);
     c2prn("ca2p", ca2p);
-    //c2prn("ca2r", ca2r);
+    c2prn("ca2r", ca2r);
 
     CtxtP ca2scP = rescale(ca2p, param.penc.idelta, param);
     c2prn("ca2scP", ca2scP);

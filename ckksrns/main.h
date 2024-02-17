@@ -3,6 +3,8 @@
 void t01_rns1();
 void t02_rns2();
 void t03_rns3();
+void t04_rns4();
+
 void t04_rnsYes1();
 void t05_rebase();
 

@@ -481,6 +481,9 @@ ckks::CtxtP ckks::relinExt(const Ctxt3P & c, const Param & par, const EkExtP & e
     auto pb = div(d2ekb, ek.P, pq);
     r.c0 = add(r.c0, pb, q);
     r.c1 = add(r.c1, pa, q);
+    cout << "AAA " << __func__ << " d2=" << d2 
+        << " ek:a:b=" << ek.a << ek.b
+        << " d2ek=" <<d2eka<<d2ekb<< '\n';
     return r;
 }
 
@@ -503,6 +506,9 @@ ckks::CtxtR ckks::relinExt(const Ctxt3R & c, const Param & par, const EkExtR & e
     auto pb = d2ekb.shrink(ek.rshrink);
     r.c0 = add(r.c0, pb);
     r.c1 = add(r.c1, pa);
+    cout << "AAA " << __func__ << " d2=" << d2
+        << " ek:a:b=" << ek.a << ek.b
+        << " d2ek=" << d2eka << d2ekb << '\n';
     return r;
 }
 
@@ -550,7 +556,7 @@ poly::PolyRns ckks::genPolyR2R(int n, RndStream & rs, const rns_ns::Rns & rns)
     return r;
 }
 
-rns_ns::RnsForm ckks::getRqRns(RndStream & rs, const rns_ns::RnsForm & fq)
+rns_ns::RnsForm ckks::getRqRns(RndStream & rs, const rns_ns::RnsForm & fqm)
 {
     using rns_ns::RnsForm;
 
@@ -580,10 +586,11 @@ rns_ns::RnsForm ckks::getRqRns(RndStream & rs, const rns_ns::RnsForm & fq)
         //return rns_ns::RnsForm(fq.rns(), rs.getRq(q0));
     }
 
-    auto rns = fq.rns();
+    auto rns = fqm.rns();
     if (0) return RnsForm(rns, 0);
     Integer b = rs.getRqSeed();
-    RnsForm fb(rns, b);
+    RnsForm fb(rns, b), fq { fqm };
+    fq.setM();
     fb += (fb + fq / Integer { 100 }) * (fq / Integer { 10 });
     return (fb % fq);
 }
@@ -727,6 +734,8 @@ ckks::EkExtP::EkExtP(SkP sk, Param p, RndStream & rs, Integer newp)
     s = rangeUpP(s, q);
     e = rangeUpP(e, q);
 
+    cout << "AAA " << __func__ << " PQ=" << q << " s=" << s << " a=" << a << " e=" << e << '\n';
+
     // b = -a*SK + e + P*SK*SK
     // a = a
     auto x1 = neg(a, q);
@@ -770,8 +779,11 @@ ckks::EkExtR::EkExtR(SkR sk, Param p, RndStream & rs, rns_ns::Rns & rext,
     ///s = rangeUpP(s, q);
     ///e = rangeUpP(e, q);
 
+
     auto se = s.rebase(rext);
     auto PinPQ = rshrink.PinQ.rebaseAdd(rext);
+
+    cout << "AAA " << __func__ << " PQ=" << rext.dynrange_() << " s=" << se << " a=" << a << " e=" << e << '\n';
 
     // b = -a*SK + e + P*SK*SK
     // a = a

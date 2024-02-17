@@ -239,6 +239,14 @@ rns_ns::RnsForm rns_ns::RnsForm::invert() const
     return r;
 }
 
+// set 0 to M
+void rns_ns::RnsForm::setM()
+{
+    if (!islowval()) return;
+    if (lowval() != Integer{ 0 }) return;
+    v = prns->getQs();
+}
+
 int rns_ns::RnsForm::operator+=(const vint & b)
 {
     const auto & qs = prns->qs;
@@ -262,21 +270,50 @@ rns_ns::RnsForm & rns_ns::RnsForm::operator+=(const rns_ns::RnsForm & b)
     return *this;
 }
 
-void rns_ns::RnsForm::divABRQ(const RnsForm & a, const RnsForm & b, RnsForm * r, RnsForm * q) const
+std::pair<rns_ns::RnsForm, rns_ns::RnsForm> rns_ns::RnsForm::divABRQ(const RnsForm & a, const RnsForm & b) const
 {
-    // this is slow
+    // slow
     if (a < b)
-    {
+        return { a, RnsForm(a.prns,0) };
 
+    if (b.islowval() && b.lowval() == Integer{ 0 }) 
+        nevers("division by 0");
+
+    return divABRQ_rec(a, b);
+}
+
+std::pair<rns_ns::RnsForm, rns_ns::RnsForm> rns_ns::RnsForm::divABRQ_rec(const RnsForm& a, const RnsForm& b) const
+{
+    // we assume that b<=a
+
+    if (1) // FIXME turn off
+        if (a < b) never;
+
+    RnsForm f0(a.prns, 0), f1(a.prns, 1), f2(a.prns, 2);
+    Integer i2{ 2 };
+
+    if( a==b ) return { f0, f1 };
+
+    auto c = a - b;
+    if( c == b ) return { f0, f2 };
+    if( c < b )  return { c, f1 };
+
+    auto b2 = b * i2;
+    auto [R, Q] = divABRQ_rec(a, b2);
+    Q *= i2;
+    if (R >= b)
+    {
+        R -= b;
+        Q += Integer{ 1 };
     }
-    never;
+    return { R,Q };
 }
 
 bool rns_ns::RnsForm::operator<(const RnsForm& b) const
 {
     vint am = prns->mrs(v);
     vint bm = prns->mrs(b.v);
-    int sz = am.size();
+    int sz = (int)am.size();
     for (int i = sz - 1; i >= 0; i--)
     {
         if (am[i] < bm[i]) return true;

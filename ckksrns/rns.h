@@ -89,6 +89,7 @@ class RnsForm
         double blendDbl(bool recenter) const { return prns->blendDbl(v, recenter); }
         RnsForm div2exact() const { auto r = *this; prns->div2exact(r.v); return r; }
         RnsForm invert() const;
+        void setM();
 
         int operator+=(const vint & b); // returns number of oveflows
         RnsForm & operator+=(const rns_ns::RnsForm & b);
@@ -97,12 +98,20 @@ class RnsForm
         RnsForm operator*(const RnsForm & b) const { RnsForm t = *this;  return t *= b; }
 
         //RnsForm& operator/=(const rns_ns::RnsForm& b);
-        RnsForm operator/(const RnsForm & b) const { RnsForm q(prns, 0); divABRQ(*this, b, nullptr, &q); return q; }
-        RnsForm operator%(const RnsForm & b) const { RnsForm r(prns, 0); divABRQ(*this, b, &r, nullptr); return r; }
+        RnsForm operator/(const RnsForm & b) const { return divABRQ(*this, b).second; }
+        RnsForm operator%(const RnsForm & b) const { return divABRQ(*this, b).first; }
+        ///void divABRQ(const RnsForm& a, const RnsForm& b, RnsForm* r, RnsForm* q) const;
+        std::pair<RnsForm, RnsForm> divABRQ(const RnsForm& a, const RnsForm& b) const;
+        std::pair<RnsForm, RnsForm> divABRQ_rec(const RnsForm& a, const RnsForm& b) const;
+        bool operator<(const RnsForm& b) const;
+        bool operator>=(const RnsForm& b) const { return !(*this < b); }
+
         RnsForm operator/(Integer b) const { return *this / RnsForm(prns, b); }
         RnsForm operator%(Integer b) const { return *this % RnsForm(prns, b); }
-        void divABRQ(const RnsForm & a, const RnsForm & b, RnsForm * r, RnsForm * q) const;
-        bool operator<(const RnsForm& b) const;
+        RnsForm& operator+=(Integer b) { return operator+=(RnsForm(prns,b));  }
+        RnsForm operator+(Integer b) const { return operator+(RnsForm(prns, b)); }
+        RnsForm& operator*=(Integer b) { return operator*=(RnsForm(prns, b)); }
+        RnsForm operator*(Integer b) const { return operator*(RnsForm(prns, b)); }
 
         RnsForm operator-() const;
         RnsForm & operator-=(const rns_ns::RnsForm & b) { return *this += -b; }

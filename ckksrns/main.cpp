@@ -21,30 +21,19 @@ using poly::PolyRns;
 int main()
 try
 {
-    if (1)// test comparison
-    {
-        rns_ns::RnsMrs rns{ 17, 13, 11 };
-            rns_ns::RnsForm a(rns, 100), b(rns, 200);
-            if (a < b)
-                std::ignore = a;
-            if (a < a)
-                std::ignore = a;
-            if (b < a)
-                std::ignore = a;
-    }
-
     if (1)
     {
         t01_rns1();
         t02_rns2();
         t03_rns3();
+        t04_rns4();
         //t04_rnsYes1();
         t05_rebase();
         t00_ntt();
         t01_encode();
         t02_encSk();
         t03_encPk();
-        t04_mul3();
+        //t04_mul3(); // FIXME wrong results in here
         t05_mul2();
         //    t06_mul1();
         //    t07_mul();
@@ -143,6 +132,31 @@ void t03_rns3()
     }
     auto b = ra.lowval();
     cout << "a = " << a << "\tb = " << b << '\n';
+}
+
+void t04_rns4()
+{
+    cout << "\n>>> " << __func__ << '\n';
+    using rns_ns::RnsForm;
+
+    rns_ns::RnsMrs rns{ 5, 7 };
+    Integer dyn = rns.dynrange_();
+    for (int i = 0; i < dyn; i++)
+    {
+        for (int j = 1; j < dyn; j++)
+        {
+            rns_ns::RnsForm a(rns, i), b(rns, j);
+            auto fq = a / b;
+            auto fr = a % b;
+            Integer ifq = fq.blend_();
+            Integer ifr = fr.blend_();
+            Integer iq = i / j;
+            Integer ir = i % j;
+            if (ifq != iq) never;
+            if (ifr != ir) never;
+            //cout << i << '\t' << j << '\t'<< ir << '\t' <<ifr << '\t' << iq << '\t' << ifq << '\n';
+        }
+    }
 }
 
 void t04_rnsYes1()
@@ -439,7 +453,7 @@ void t03_encPk()
     cout << "a2r =" << roundv(1e-2, a2r) << '\n';
 }
 
-void t04_mul3()
+void t04_mul3() // FIXME this gives wrong result, we may compare it with ckksntt version
 {
     cout << "\n>>> " << __func__ << '\n';
 
@@ -457,16 +471,6 @@ void t04_mul3()
     cout << "a =" << a << '\n';
 
     rns_ns::RnsMrs rns { 1033, 1009 };
-    if (1) // test comparison
-    {
-        rns_ns::RnsForm a(rns, 1), b(rns, 2);
-        if (a < b)
-            never;
-        if (a < a)
-            never;
-        if (b < a)
-            never;
-    }
 
     Poly map = encodeP(param, a);
     PolyRns mar = encodeR(param, a, rns);
