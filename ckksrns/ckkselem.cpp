@@ -648,7 +648,7 @@ Integer ckks::getRq(RndStream & rs, Integer q0)
     //return (b % q0);
 
 
-    if (0) // new version
+    if (1) // new version
     {
         auto q1 = q0;
         auto b1 = b0;
@@ -656,6 +656,7 @@ Integer ckks::getRq(RndStream & rs, Integer q0)
         q1 /= 8;
         q1 += b1;
         b1 += b1 * q1;
+        if (b1 < 0) never;
         b1 = b1 % q0;
         std::ignore = b1;
         return b1;
@@ -664,9 +665,12 @@ Integer ckks::getRq(RndStream & rs, Integer q0)
     {
         auto q2 = q0;
         auto b2 = b0;
-        b2 += (b2 + q2 / 100) * (q2 / 10);
-        //b2 += b2/1324; // 1324-bad 1325-ok - poly 4
-        b2 += b2 * 165; // poly 2 (165,170)
+        b2 += (((b2 + q2 / 100)%q0) * (q2 / 10))%q0;
+        b2 %= q0;
+        b2 += b2/1324; // 1324-bad 1325-ok - poly 4
+        b2 %= q0;
+        //b2 += (b2 * 2000)%q0; // poly 2 
+        if (b2 < 0) never;
         b2 %= q0;
         return b2;
     }
@@ -682,7 +686,7 @@ int ckks::RndStream::getR2()
 
 Integer ckks::RndStream::getEr()
 {
-    if (0) return Integer(0);
+    if (1) return Integer(0); // FIXME ***
     int & a = er;
     return Integer((++a) % 5 - 2);
 }
