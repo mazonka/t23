@@ -457,6 +457,15 @@ ckks::CtxtP ckks::rescale(const CtxtP & c, Integer idelta, Param par)
     return CtxtP(c.level, c0, c1);
 }
 
+ckks::CtxtR ckks::rescale(const CtxtR& c, Integer idelta, Param par)
+{
+    int lv = c.level - 1;
+    if (lv < 0) nevers("negative level");
+    PolyRns c0 = rescaleRoundRns(c.c0, idelta);
+    PolyRns c1 = rescaleRoundRns(c.c1, idelta);
+    return CtxtR(lv, c0, c1);
+}
+
 //ckks::Ctxt ckks::mulExt(const Ctxt& a, const Ctxt& b, const Param& p, const EkExt& ek)
 //{
 //    Ctxt3 c3 = mul3(a, b, p);
@@ -613,12 +622,22 @@ Integer ckks::getRq(RndStream & rs, Integer q0)
     if (0) return Integer(0);
     Integer b = rs.getRqSeed();
     auto q = q0;
-    q -= 1;
-    q /= 8;
-    q += b;
-    b += b * q;
-    b = b % q0;
-    return b;
+
+    if (0) // new version
+    {
+        q -= 1;
+        q /= 8;
+        q += b;
+        b += b * q;
+        b = b % q0;
+        return b;
+    }
+    else // old version
+    {
+        Integer b = rs.getRqSeed();
+        b += (b + q / 100) * (q / 100);
+        return (b % q);
+    }
 }
 
 rns_ns::RnsForm ckks::getRqRns(RndStream & rs, const rns_ns::RnsForm & fqm)
