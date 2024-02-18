@@ -644,6 +644,15 @@ Integer ckks::getRq(RndStream & rs, Integer q0)
     //b += (b + q0 / 100) * (q0 / 10);
     //return (b % q0);
 
+    //if (b0 == 8) return 0;
+    //if (b0 == 7) return 0; // 217146815263
+    //if (b0 == 6) return 0;
+    //if (b0 == 5) return 0;
+    //if (b0 == 4) return 0;
+    //if (b0 == 3) return 0;
+    //if (b0 == 2) return 0;
+    //if (b0 == 1) return 0;
+
 
     if (1) // new version
     {
@@ -713,12 +722,23 @@ rns_ns::RnsForm ckks::getRqRns(RndStream & rs, const rns_ns::RnsForm & fqm)
     //return (fb % fq);
 
     fq -= Integer { 1 };
+    ///fq.blend_();
     fq /= 8;
+    ///fq.blend_();
     fq += fb;
+    ///fq.blend_();
     fb += fb * fq;
+    ///fb.blend_();
     //fb = fb % q0;
-    return fb;
+    if(0) ///
+    {
+        auto xb = fb.blend_();
+        auto xd = rns->dynrange_();
+        std::ignore = xb;
+        std::ignore = xd;
+    }
 
+    return fb;
 }
 
 int ckks::RndStream::getR2()

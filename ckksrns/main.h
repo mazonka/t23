@@ -13,6 +13,7 @@ void t01_encode();
 void t02_encSk();
 void t03_encPk();
 void t04_mul3();
+void t04_mul3_v1();
 void t05_mul2();
 void t06_mul1();
 void t07_mul();
