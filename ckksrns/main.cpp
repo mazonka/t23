@@ -34,8 +34,10 @@ try
         //t02_encSk();
         //t03_encPk();
         //t04_mul3();
-        t04_mul3_v1();
-        //t05_mul2();
+        //t04_mul3_v1();
+        //t05_mul2_v1();
+        //t05_mul2_v2();
+        t05_mul2();
         //    t06_mul1();
         //    t07_mul();
     }
@@ -467,7 +469,7 @@ void t04_mul3_v1()
     //vector<cx> a = { 3.0 };
 
     Param param(4, Integer(1024), Integer(delta), 1);
-    rns_ns::RnsMrs rns{ 1033, 1009 };
+    rns_ns::RnsMrs rns { 1033, 1009 };
     vector<cx> a = { 3.0, 2.0 };
 
     cout << param.print() << '\n';
@@ -581,7 +583,7 @@ void t04_mul3()
 
     cout << "a =" << a << '\n';
 
-    rns_ns::RnsMrs rns{ 1033, 1009 };
+    rns_ns::RnsMrs rns { 1033, 1009 };
 
     Poly map = encodeP(param, a);
     PolyRns mar = encodeR(param, a, rns);

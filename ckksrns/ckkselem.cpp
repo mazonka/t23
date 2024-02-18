@@ -471,7 +471,7 @@ ckks::CtxtP ckks::rescale(const CtxtP & c, Integer idelta, Param par)
     return CtxtP(c.level, c0, c1);
 }
 
-ckks::CtxtR ckks::rescale(const CtxtR& c, Integer idelta, Param par)
+ckks::CtxtR ckks::rescale(const CtxtR & c, Integer idelta, Param par)
 {
     int lv = c.level - 1;
     if (lv < 0) nevers("negative level");
@@ -666,6 +666,7 @@ Integer ckks::getRq(RndStream & rs, Integer q0)
     //if (b0 == 3) return 0;
     //if (b0 == 2) return 0+0*263678;
     //if (b0 == 1) return 1+0*131838;
+    //return q0-1;
 
 
     if (1) // new version
@@ -678,6 +679,7 @@ Integer ckks::getRq(RndStream & rs, Integer q0)
         b1 += b1 * q1;
         if (b1 < 0) never;
         b1 = b1 % q0;
+        b1 = q0 - b1; // addition 01
         std::ignore = b1;
         return b1;
     }
@@ -689,7 +691,7 @@ Integer ckks::getRq(RndStream & rs, Integer q0)
         b2 %= q0;
         b2 += b2 / 1324; // 1324-bad 1325-ok - poly 4
         b2 %= q0;
-        //b2 += (b2 * 2000)%q0; // poly 2 
+        //b2 += (b2 * 2000)%q0; // poly 2
         if (b2 < 0) never;
         b2 %= q0;
         return b2;
@@ -744,13 +746,14 @@ rns_ns::RnsForm ckks::getRqRns(RndStream & rs, const rns_ns::RnsForm & fqm)
     fb += fb * fq;
     ///fb.blend_();
     //fb = fb % q0;
-    if(0) ///
+    if (0) ///
     {
         auto xb = fb.blend_();
         auto xd = rns->dynrange_();
         std::ignore = xb;
         std::ignore = xd;
     }
+    fb = - fb; // addition 01
 
     return fb;
 }
@@ -759,13 +762,19 @@ int ckks::RndStream::getR2()
 {
     if (0) return 0;
     int & a = r2;
-    return ((++a) % 3 - 1);
+    ++a;
+
+    if (a == 1) return 1;
+    return -1;
+
+    auto r = ((a + 1) % 3 - 1);
+    return r;
 }
 
 Integer ckks::RndStream::getEr()
 {
     if (0) return Integer(0);
-    return Integer(0); // FIXME *************************************
+    //return Integer(0); // FIXME *************************************
     int & a = er;
     return Integer((++a) % 5 - 2);
 }
