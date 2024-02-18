@@ -462,16 +462,17 @@ void t04_mul3_v1()
     using namespace std::complex_literals;
     Integer delta(64);
 
-    Param param(2, Integer(1024), Integer(delta), 1);
-    rns_ns::RnsMrs rns{ 1033, 1021 };
-    //Param param(4, Integer(1024), Integer(delta), 1);
-    //rns_ns::RnsMrs rns{ 1033, 1009 };
+    //Param param(2, Integer(1024), Integer(delta), 1);
+    //rns_ns::RnsMrs rns{ 1033, 1021 };
+    //vector<cx> a = { 3.0 };
+
+    Param param(4, Integer(1024), Integer(delta), 1);
+    rns_ns::RnsMrs rns{ 1033, 1009 };
+    vector<cx> a = { 3.0, 2.0 };
 
     cout << param.print() << '\n';
     cout << "xi =" << roundv(1e-3, param.penc.vxi) << '\n';
 
-    vector<cx> a = { 3.0 };
-    //vector<cx> a = { 3.0, 2.0 };
     //vector<cx> a = { 1.0, 0.0 };
     //vector<cx> a = { 3.0 + 0.1i, 2.0 + 0i };
 
@@ -523,9 +524,9 @@ void t04_mul3_v1()
     c3prn("ca3r", ca3r);
 
     {
-        Poly md3p = decryptP(skp, ca3p, param);
+        Poly md3p = decryptP3(skp, ca3p, param);
         cout << "md3p = " << md3p << '\n';
-        PolyRns md3r = decryptR(skr, ca3r, param);
+        PolyRns md3r = decryptR3(skr, ca3r, param);
         cout << "md3r = " << md3r << '\n';
 
         auto a23p = decodeP(param, md3p);
@@ -535,11 +536,11 @@ void t04_mul3_v1()
 
         Poly md3scP = rescaleRound(md3p, param.penc.idelta);
         auto a23scP = decodeP(param, md3scP);
-        cout << "a23scP =" << roundv(1e-2, a23scP) << '\n';
+        cout << "a23scP =" << roundv(1e-4, a23scP) << '\n';
 
         PolyRns md3scR = rescaleRoundRns(md3r, param.penc.idelta);
         auto a23scR = decodeR(param, md3scR, rns);
-        cout << "a23scR =" << roundv(1e-2, a23scR) << '\n';
+        cout << "a23scR =" << roundv(1e-4, a23scR) << '\n';
     }
 
     cout << '\n';
@@ -549,15 +550,15 @@ void t04_mul3_v1()
         Ctxt3R ca3scR = rescale(ca3r, param.penc.idelta);
         c3prn("ca3scR", ca3scR);
 
-        Poly md3sp = decryptP(skp, ca3scP, param);
+        Poly md3sp = decryptP3(skp, ca3scP, param);
         cout << "md3sp = " << md3sp << '\n';
-        PolyRns md3sr = decryptR(skr, ca3scR, param);
+        PolyRns md3sr = decryptR3(skr, ca3scR, param);
         cout << "md3sr = " << md3sr << '\n';
 
         auto a23sp = decodeP(param, md3sp);
-        cout << "a23sp =" << roundv(1e-2, a23sp) << '\n';
+        cout << "a23sp =" << roundv(1e-4, a23sp) << '\n';
         auto a23sr = decodeR(param, md3sr, rns);
-        cout << "a23sr =" << roundv(1e-2, a23sr) << '\n';
+        cout << "a23sr =" << roundv(1e-4, a23sr) << '\n';
     }
 }
 
@@ -667,9 +668,9 @@ void t04_mul3()
     c3prn("ca3r", ca3r);
 
     {
-        Poly md3p = decryptP(skp, ca3p, param);
+        Poly md3p = decryptP3(skp, ca3p, param);
         cout << "md3p = " << md3p << '\n';
-        PolyRns md3r = decryptR(skr, ca3r, param);
+        PolyRns md3r = decryptR3(skr, ca3r, param);
         cout << "md3r = " << md3r << '\n';
 
         auto a23p = decodeP(param, md3p);
@@ -693,9 +694,9 @@ void t04_mul3()
         Ctxt3R ca3scR = rescale(ca3r, param.penc.idelta);
         c3prn("ca3scR", ca3scR);
 
-        Poly md3sp = decryptP(skp, ca3scP, param);
+        Poly md3sp = decryptP3(skp, ca3scP, param);
         cout << "md3sp = " << md3sp << '\n';
-        PolyRns md3sr = decryptR(skr, ca3scR, param);
+        PolyRns md3sr = decryptR3(skr, ca3scR, param);
         cout << "md3sr = " << md3sr << '\n';
 
         auto a23sp = decodeP(param, md3sp);

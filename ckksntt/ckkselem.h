@@ -112,7 +112,7 @@ struct Pk
 Ctxt encrypt(Pk pk, poly::Poly m, Param p, RndStream & rs);
 Ctxt encrypt(Sk sk, poly::Poly m, Param p, RndStream & rs);
 poly::Poly decrypt(Sk sk, Ctxt c, Param p);
-poly::Poly decrypt(Sk sk, Ctxt3 c, Param p);
+poly::Poly decrypt(Sk sk, Ctxt3 c, Param p); // FIXME make deriv protected to avoid slicing
 
 Ctxt add(const Ctxt & a, const Ctxt & b, Param p);
 Ctxt3 mul3(const Ctxt & a, const Ctxt & b, Param p);

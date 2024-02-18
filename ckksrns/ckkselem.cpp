@@ -311,6 +311,29 @@ poly::Poly ckks::decryptP(SkP sk, CtxtP c, Param p)
     return m;
 }
 
+poly::Poly ckks::decryptP3(SkP sk, Ctxt3P c, Param p)
+{
+    auto q = p.q_(c.level);
+
+    Poly s = sk.s;
+
+    s = rangeUpP(s, q);
+    auto c0 = rangeDownP(c.c0, q);
+    auto c1 = rangeDownP(c.c1, q);
+    auto c2 = rangeDownP(c.c2, q);
+
+    // m = c0 + c1*SK + c2*SK^2 mod q0
+    auto x1 = mul(c1, s, q);
+    auto x2 = add(c0, x1, q);
+    auto x3 = mul(c2, s, q);
+    auto x4 = mul(x3, s, q);
+    auto x5 = add(x2, x4, q);
+
+    auto m = rangeCenterP(x5, q);
+
+    return m;
+}
+
 poly::PolyRns ckks::decryptR(SkR sk, CtxtR c, Param p)
 {
     //auto q = p.q_(c.level);
@@ -331,28 +354,19 @@ poly::PolyRns ckks::decryptR(SkR sk, CtxtR c, Param p)
     return x2;
 }
 
-//poly::Poly ckks::decrypt(Sk sk, Ctxt3 c, Param p)
-//{
-//    auto q = p.q(c.level);
-//
-//    Poly s = sk.s;
-//
-//    s = rangeUp(s, q);
-//    auto c0 = rangeDown(c.c0, q);
-//    auto c1 = rangeDown(c.c1, q);
-//    auto c2 = rangeDown(c.c2, q);
-//
-//    // m = c0 + c1*SK + c2*SK^2 mod q0
-//    auto x1 = mul(c1, s, q);
-//    auto x2 = add(c0, x1, q);
-//    auto x3 = mul(c2, s, q);
-//    auto x4 = mul(x3, s, q);
-//    auto x5 = add(x2, x4, q);
-//
-//    auto m = rangeCenter(x5, q);
-//
-//    return m;
-//}
+poly::PolyRns ckks::decryptR3(SkR sk, Ctxt3R c, Param p)
+{
+    PolyRns s = sk.s;
+
+    // m = c0 + c1*SK + c2*SK^2 mod q0
+    auto x1 = mul(c.c1, s);
+    auto x2 = add(c.c0, x1);
+    auto x3 = mul(c.c2, s);
+    auto x4 = mul(x3, s);
+    auto x5 = add(x2, x4);
+
+    return x5;
+}
 
 ckks::CtxtP ckks::add(const CtxtP & a, const CtxtP & b, Param p)
 {
@@ -476,7 +490,7 @@ ckks::CtxtR ckks::rescale(const CtxtR& c, Integer idelta, Param par)
 
 ckks::CtxtP ckks::relinExt(const Ctxt3P & c, const Param & par, const EkExtP & ek)
 {
-    CtxtP r = c; // slice object
+    CtxtP r = c.slice(); // slice object
 
     Integer q = par.q_(c.level);
     Integer pq = ek.P * q;
@@ -498,7 +512,7 @@ ckks::CtxtP ckks::relinExt(const Ctxt3P & c, const Param & par, const EkExtP & e
 
 ckks::CtxtR ckks::relinExt(const Ctxt3R & c, const Param & par, const EkExtR & ek)
 {
-    CtxtR r = c; // slice object
+    CtxtR r = c.slice(); // slice object
 
     ///never;
     ///Integer q = par.q_(c.level);
@@ -650,8 +664,8 @@ Integer ckks::getRq(RndStream & rs, Integer q0)
     //if (b0 == 5) return 0;
     //if (b0 == 4) return 0;
     //if (b0 == 3) return 0;
-    //if (b0 == 2) return 0;
-    //if (b0 == 1) return 0;
+    //if (b0 == 2) return 0+0*263678;
+    //if (b0 == 1) return 1+0*131838;
 
 
     if (1) // new version
@@ -751,6 +765,7 @@ int ckks::RndStream::getR2()
 Integer ckks::RndStream::getEr()
 {
     if (0) return Integer(0);
+    return Integer(0); // FIXME *************************************
     int & a = er;
     return Integer((++a) % 5 - 2);
 }

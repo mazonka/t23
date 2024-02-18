@@ -111,17 +111,25 @@ struct CtxtR
     CtxtR(int lev, const PolyR & a0, const PolyR & a1) : level(lev), c0(a0), c1(a1) {}
 };
 
-struct Ctxt3P : CtxtP
+struct Ctxt3P : protected CtxtP
 {
     poly::Poly c2;
     Ctxt3P(const CtxtP & c01, const Poly & c2) : CtxtP(c01), c2(c2) {}
+
+    CtxtP slice() const { return *this;  }
+    using CtxtP::level;
+    using CtxtP::c0, CtxtP::c1;
 };
 
-struct Ctxt3R : CtxtR
+struct Ctxt3R : protected CtxtR
 {
     using PolyR = poly::PolyRns;
     PolyR c2;
     Ctxt3R(const CtxtR & c01, const PolyR & c2) : CtxtR(c01), c2(c2) {}
+
+    CtxtR slice() const { return *this; }
+    using CtxtR::level;
+    using CtxtR::c0, CtxtR::c1;
 };
 
 // FIXME RnsStream must be ref&
@@ -156,7 +164,9 @@ CtxtP encryptP(PkP pk, poly::Poly m, Param p, RndStream & rs);
 CtxtR encryptR(SkR sk, poly::PolyRns m, Param p, RndStream & rs);
 CtxtR encryptR(PkR pk, poly::PolyRns m, Param p, RndStream & rs);
 poly::Poly decryptP(SkP sk, CtxtP c, Param p);
+poly::Poly decryptP3(SkP sk, Ctxt3P c, Param p);
 poly::PolyRns decryptR(SkR sk, CtxtR c, Param p);
+poly::PolyRns decryptR3(SkR sk, Ctxt3R c, Param p);
 //poly::Poly decrypt(Sk sk, Ctxt3 c, Param p);
 
 
