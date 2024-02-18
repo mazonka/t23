@@ -26,10 +26,13 @@ class Rns
         std::pair<Integer, int> blend_(const vint & v) const;
         double blendDbl(const vint & v, bool recenter) const;
 
-        void initL(std::initializer_list<Integer> li);
+        void initL(std::initializer_list<Integer> li) { initV(li); }
         void initV(const vint & ve);
+
         Rns(std::initializer_list<Integer> li) { initL(li); }
+        Rns(const vint & ve) { initV(ve); }
         Rns() {}
+
         virtual string print() const;
         virtual vint pow2div(const vint & v, int pow2) const = 0;
 
@@ -163,6 +166,7 @@ class RnsMrs : public Rns
     public:
         RnsMrs() : Rns() {}
         RnsMrs(std::initializer_list<Integer> li) : Rns(li) { myinit(); }
+        RnsMrs(const vint & ve) : Rns(ve) { myinit(); }
         RnsMrs(const RnsMrs & A, Rns::Op op, const RnsMrs & B);
 
         void init(std::initializer_list<Integer> li) { Rns::initL(li); myinit(); }

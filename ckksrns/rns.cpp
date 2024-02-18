@@ -133,10 +133,10 @@ chkmax:
     return true;
 }
 
-void rns_ns::Rns::initL(std::initializer_list<Integer> li)
-{
-    initV(li);
-}
+//void rns_ns::Rns::initL(std::initializer_list<Integer> li)
+//{
+//    initV(li);
+//}
 
 void rns_ns::Rns::initV(const vint & ve)
 {

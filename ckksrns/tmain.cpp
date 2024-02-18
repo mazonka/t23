@@ -238,7 +238,8 @@ void t05_mul2()
 
     cout << "a =" << a << '\n';
 
-    RnsMrs rns { 1033, 1009 };
+    //RnsMrs rns { 1033, 1009 };
+    RnsMrs rns(param.vqs);
     Poly map = encodeP(param, a);
     PolyRns mar = encodeR(param, a, rns);
 

@@ -36,6 +36,9 @@ struct ParamQx // parameters for ModUp ModDown
         ParamQx(Integer q, int lev, ParamEncode pe) : penc(pe), levels(lev)
         {
             vqs = findNttCoprimes(q);
+            std::reverse(vqs.begin(), vqs.end());
+            // reverse is done to move the best (closest) to the
+            // end, so error on rescaling is minimal
         }
         Integer q0() const { return vqs[0]; }
         ///Integer qL() const { return vql[levels]; }
