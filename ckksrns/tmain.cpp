@@ -87,17 +87,17 @@ void t05_mul2()
 
     CtxtP ca2scP = rescale(ca2p, param.penc.idelta, param);
     c2prn("ca2scP", ca2scP);
-    //CtxtR ca2scR = rescale(ca2r, param.penc.idelta, param);
-    //c2prn("ca2scR", ca2scR);
+    CtxtR ca2scR = rescale(ca2r, param.penc.idelta, param);
+    c2prn("ca2scR", ca2scR);
 
     Poly md2p = decryptP(skp, ca2scP, param);
     cout << "md2p = " << md2p << '\n';
-    //PolyRns md2r = decryptR(skr, ca2scR, param);
-    //cout << "md2r = " << md2r << '\n';
+    PolyRns md2r = decryptR(skr, ca2scR, param);
+    cout << "md2r = " << md2r << '\n';
     auto a22p = decodeP(param, md2p);
     cout << "a22p =" << roundv(1e-2, a22p) << '\n';
-    //auto a22r = decodeR(param, md2r, rns);
-    //cout << "a22r =" << roundv(1e-2, a22r) << '\n';
+    auto a22r = decodeR(param, md2r, rns);
+    cout << "a22r =" << roundv(1e-2, a22r) << '\n';
 }
 
 void t05_rebase()
