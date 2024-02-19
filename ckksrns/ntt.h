@@ -67,4 +67,11 @@ class NttMan
         const Context & give(int n, Integer q);
 };
 
+struct Nttoff
+{
+    bool oldval;
+    Nttoff() : oldval(ntt::disabled) { ntt::disabled = true; }
+    ~Nttoff() { ntt::disabled = oldval; }
+};
+
 } // ntt
