@@ -228,8 +228,8 @@ void t05_mul2()
     using namespace std::complex_literals;
     using rns_ns::RnsMrs;
 
-    Integer delta(1024);
-    Param param(4, Integer(1024), Integer(delta), 1);
+    Integer delta_(1024);
+    Param param(4, Integer(1024), Integer(delta_), 1);
     cout << param.print() << '\n';
 
     vector<cx> a = { 0.8, 0.5 };
@@ -296,8 +296,8 @@ void t05_mul2()
     c2prn("ca2scP", ca2scP);
 
     Integer qdrop = param.vqs[ca2r.level];
-    RnsMrs rnsLast{qdrop};
-    RnsMrs rnsLm1{ rns, rns_ns::Rns::minus, rnsLast};
+    RnsMrs rnsLast {qdrop};
+    RnsMrs rnsLm1 { rns, rns_ns::Rns::minus, rnsLast};
     rns_ns::RnsShrinkRound datLm1(rnsLm1, rnsLast);
 
     CtxtR ca2scR = rescaleLevel(ca2r, datLm1);

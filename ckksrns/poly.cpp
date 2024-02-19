@@ -179,16 +179,16 @@ poly::Poly poly::rescaleRound(const Poly & a, Integer idelta)
     return r;
 }
 
-poly::Poly poly::rescaleRoundLevel(const Poly& a, Integer idelta)
+poly::Poly poly::rescaleRoundLevel(const Poly & a, Integer idelta)
 {
     auto d2 = idelta / 2;
     Poly r(a);
-    for (auto& x : r.v)
+    for (auto & x : r.v)
     {
         if (x < 0) never;
         //    x = -((-x + d2) / idelta);
         //else
-            x = (x + d2) / idelta;
+        x = (x + d2) / idelta;
     }
     return r;
 }
@@ -353,7 +353,7 @@ poly::PolyRns poly::mul(const PolyRns & a, const PolyRns & b)
 }
 
 // same as mul but allows to drop excessive towersw in b
-poly::PolyRns poly::mulDrop(const PolyRns& a, const PolyRns& b)
+poly::PolyRns poly::mulDrop(const PolyRns & a, const PolyRns & b)
 {
     int antows = a.ntows();
     int bntows = b.ntows();
@@ -373,13 +373,13 @@ poly::PolyRns poly::mulDrop(const PolyRns& a, const PolyRns& b)
     for (int i = 0; i < bntows; i++)
     {
         auto q = brns->getQs()[i];
-        if (savqs.find(q) != savqs.end()) continue;
+        if (savqs.find(q) == savqs.end()) continue;
         bdrop.towers.push_back(b.towers[i]);
     }
 
     if (antows != bdrop.ntows()) never;
 
-    return mul(a,bdrop);
+    return mul(a, bdrop);
 }
 
 poly::PolyRns poly::mul(const PolyRns & a, rns_ns::RnsForm b)

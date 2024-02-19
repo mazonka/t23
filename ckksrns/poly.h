@@ -42,8 +42,8 @@ inline Poly mul(Poly a, Poly b, Integer q)
     return r;
 }
 Poly add(Poly a, Poly b, Integer q);
-Poly rescaleRound(const Poly& a, Integer idelta);
-Poly rescaleRoundLevel(const Poly& a, Integer idelta);
+Poly rescaleRound(const Poly & a, Integer idelta);
+Poly rescaleRoundLevel(const Poly & a, Integer idelta);
 //Poly rescaleFloor(const Poly & a, Integer w);
 Poly mul(Poly a, Integer b, Integer q);
 Poly div(Poly a, Integer b, Integer q);
@@ -96,15 +96,15 @@ struct PolyRns
     PolyRns shrink(const rns_ns::RnsShrinkRound & rshr) const;
 };
 
-PolyRns mul(const PolyRns& a, const PolyRns& b);
-PolyRns mulDrop(const PolyRns& a, const PolyRns& b);
+PolyRns mul(const PolyRns & a, const PolyRns & b);
+PolyRns mulDrop(const PolyRns & a, const PolyRns & b);
 PolyRns mul(const PolyRns & a, rns_ns::RnsForm b);
 //PolyRns mul(PolyRns a, Integer b);
 //PolyRns mul(PolyRns a, const vint & vb);
 PolyRns neg(PolyRns a);
 PolyRns add(PolyRns a, PolyRns b);
 PolyRns mul_simple(const PolyRns & a, const PolyRns & b);
-PolyRns rescaleRoundRns(const PolyRns& a, Integer idelta);
+PolyRns rescaleRoundRns(const PolyRns & a, Integer idelta);
 
 } // poly
 
