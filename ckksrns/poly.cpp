@@ -1,6 +1,7 @@
 ///#include <iostream> /// debug
 ///using std::cout;
 
+#include <set>
 
 #include "integer.h"
 #include "poly.h"
@@ -178,6 +179,20 @@ poly::Poly poly::rescaleRound(const Poly & a, Integer idelta)
     return r;
 }
 
+poly::Poly poly::rescaleRoundLevel(const Poly& a, Integer idelta)
+{
+    auto d2 = idelta / 2;
+    Poly r(a);
+    for (auto& x : r.v)
+    {
+        if (x < 0) never;
+        //    x = -((-x + d2) / idelta);
+        //else
+            x = (x + d2) / idelta;
+    }
+    return r;
+}
+
 
 //poly::Poly poly::rescaleFloor(const Poly & a, Integer w)
 //{
@@ -337,6 +352,36 @@ poly::PolyRns poly::mul(const PolyRns & a, const PolyRns & b)
     return ret;
 }
 
+// same as mul but allows to drop excessive towersw in b
+poly::PolyRns poly::mulDrop(const PolyRns& a, const PolyRns& b)
+{
+    int antows = a.ntows();
+    int bntows = b.ntows();
+    auto arns = a.rns_ptr;
+    auto brns = b.rns_ptr;
+    if (antows == bntows)
+    {
+        if (arns != brns) never;
+        return mul(a, b);
+    }
+
+    PolyRns bdrop(arns);
+
+    auto avqs = arns->getQs();
+    std::set<Integer> savqs;
+    savqs.insert(avqs.begin(), avqs.end());
+    for (int i = 0; i < bntows; i++)
+    {
+        auto q = brns->getQs()[i];
+        if (savqs.find(q) != savqs.end()) continue;
+        bdrop.towers.push_back(b.towers[i]);
+    }
+
+    if (antows != bdrop.ntows()) never;
+
+    return mul(a,bdrop);
+}
+
 poly::PolyRns poly::mul(const PolyRns & a, rns_ns::RnsForm b)
 {
     int ntows = a.ntows();
@@ -395,3 +440,4 @@ poly::PolyRns poly::rescaleRoundRns(const PolyRns & a, Integer idelta)
     }
     return r;
 }
+

@@ -345,7 +345,7 @@ poly::PolyRns ckks::decryptR(SkR sk, CtxtR c, Param p)
     //auto c1 = rangeDownP(c.c1, q);
 
     // m = c0 + c1*SK mod q0
-    auto x1 = mul(c.c1, s);
+    auto x1 = mulDrop(c.c1, s);
     auto x2 = add(c.c0, x1);
 
     //auto m = rangeCenterP(x2, q);
@@ -471,6 +471,17 @@ ckks::CtxtP ckks::rescale(const CtxtP & c, Integer idelta, Param par)
     return CtxtP(c.level, c0, c1);
 }
 
+ckks::CtxtP ckks::rescaleLevel(const CtxtP& c, Param par)
+{
+    int level = c.level;
+    if (level < 1) nevers("negative level");
+    Integer q = par.q_(level);
+    Integer idelta = par.vqs[level];
+    Poly c0 = rescaleRoundLevel(c.c0, idelta);
+    Poly c1 = rescaleRoundLevel(c.c1, idelta);
+    return CtxtP(level-1, c0, c1);
+}
+
 ckks::CtxtR ckks::rescale(const CtxtR & c, Integer idelta, Param par)
 {
     int lv = c.level - 1;
@@ -478,6 +489,18 @@ ckks::CtxtR ckks::rescale(const CtxtR & c, Integer idelta, Param par)
     PolyRns c0 = rescaleRoundRns(c.c0, idelta);
     PolyRns c1 = rescaleRoundRns(c.c1, idelta);
     return CtxtR(lv, c0, c1);
+}
+
+ckks::CtxtR ckks::rescaleLevel(const CtxtR& c, const rns_ns::RnsShrinkRound& dat)
+{
+    int lv = c.level;
+    if (lv < 1) nevers("negative level");
+    ///Integer idelta = par.vqs[lv];
+    ///PolyRns c0 = rescaleRoundRnsLevel(c.c0, idelta);
+    ///PolyRns c1 = rescaleRoundRnsLevel(c.c1, idelta);
+    PolyRns c0 = c.c0.shrink(dat);
+    PolyRns c1 = c.c1.shrink(dat);
+    return CtxtR(lv-1, c0, c1);
 }
 
 //ckks::Ctxt ckks::mulExt(const Ctxt& a, const Ctxt& b, const Param& p, const EkExt& ek)

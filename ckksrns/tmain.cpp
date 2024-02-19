@@ -292,9 +292,15 @@ void t05_mul2()
         cout << "a22rU =" << roundv(1e-2, a22r * (1. / id)) << '\n';
     }
 
-    CtxtP ca2scP = rescale(ca2p, param.penc.idelta, param);
+    CtxtP ca2scP = rescaleLevel(ca2p, param);
     c2prn("ca2scP", ca2scP);
-    CtxtR ca2scR = rescale(ca2r, param.penc.idelta, param);
+
+    Integer qdrop = param.vqs[ca2r.level];
+    RnsMrs rnsLast{qdrop};
+    RnsMrs rnsLm1{ rns, rns_ns::Rns::minus, rnsLast};
+    rns_ns::RnsShrinkRound datLm1(rnsLm1, rnsLast);
+
+    CtxtR ca2scR = rescaleLevel(ca2r, datLm1);
     c2prn("ca2scR", ca2scR);
 
     Poly md2p = decryptP(skp, ca2scP, param);
