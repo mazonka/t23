@@ -42,12 +42,12 @@ try
         //    t07_mul();
     }
 
-    //if (1)
-    //{
+    if (1)
+    {
     //    t08_decomp();
     //    t09_hyb1();
-    //    t10_hyb2();
-    //}
+        //**t10_hyb2();
+    }
 }
 
 catch (int e)

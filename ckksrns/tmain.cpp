@@ -122,7 +122,7 @@ void t06_mul1()
     using namespace ckks;
     using namespace std::complex_literals;
 
-    ntt::Nttoff nttoff; // FIXME find why
+    ntt::Nttoff nttoff; // FIXME see t05
 
     cout << "\n>>> " << __func__ << '\n';
 
@@ -190,3 +190,47 @@ void t06_mul1()
     cout << "a22r =" << roundv(1e-2, a22r) << '\n';
 }
 
+void t10_hyb2()
+{
+    using namespace ckks;
+    using namespace std::complex_literals;
+
+    ntt::Nttoff nttoff; // FIXME see t05
+
+    cout << "\n>>> " << __func__ << '\n';
+
+    using namespace ckks;
+    using namespace std::complex_literals;
+    using rns_ns::RnsMrs;
+
+    Integer delta_(1024);
+    Param param(4, Integer(1024), Integer(delta_), 1);
+    cout << param.print() << '\n';
+
+    vector<cx> a = { 0.8, 0.5 };
+
+    cout << "a =" << a << '\n';
+
+    Poly map = encodeP(param, a);
+
+    cout << "map = " << map << '\n';
+
+    RndStream rs;
+    SkP skp(rs, param.penc.n);
+
+    CtxtP cap = encryptP(skp, map, param, rs);
+    cout << "cap.c0 = " << cap.c0 << '\n';
+    cout << "cap.c1 = " << cap.c1 << '\n';
+
+    param.w = 16;
+    EkHybP ekp(1, skp, param, rs);
+
+    CtxtP ca2p = mulHybP(cap, cap, param, ekp);
+    cout << "ca2p.c0 = " << ca2p.c0 << '\n';
+    cout << "ca2p.c1 = " << ca2p.c1 << '\n';
+
+    Poly md2p = decryptP(skp, ca2p, param);
+    cout << "md2p = " << md2p << '\n';
+    auto a22p = decodeP(param, md2p);
+    cout << "a22p =" << roundv(1e-2, a22p) << '\n';
+}
