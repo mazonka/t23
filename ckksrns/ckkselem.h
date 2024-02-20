@@ -200,9 +200,10 @@ struct EkExtR
            rns_ns::Rns & rext, rns_ns::RnsShrinkRound rshrink);
 };
 
-CtxtP mulExt(const CtxtP & a, const CtxtP & b, const Param & p, const EkExtP & ek);
 CtxtP relinExt(const Ctxt3P & c, const Param & p, const EkExtP & ek);
 CtxtR relinExt(const Ctxt3R & c, const Param & p, const EkExtR & ek);
+CtxtP mulExtP(const CtxtP& a, const CtxtP& b, const Param& p, const EkExtP& ek);
+CtxtR mulExtR(const CtxtR& a, const CtxtR& b, const Param& p, const EkExtR& ek, const rns_ns::RnsShrinkRound& datQ);
 
 } // ckks
 

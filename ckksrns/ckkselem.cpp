@@ -503,14 +503,6 @@ ckks::CtxtR ckks::rescaleLevel(const CtxtR & c, const rns_ns::RnsShrinkRound & d
     return CtxtR(lv - 1, c0, c1);
 }
 
-//ckks::Ctxt ckks::mulExt(const Ctxt& a, const Ctxt& b, const Param& p, const EkExt& ek)
-//{
-//    Ctxt3 c3 = mul3(a, b, p);
-//    Ctxt c2 = relinExt(c3, p, ek);
-//    Ctxt c2sc = rescale(c2, p.penc.idelta);
-//    return c2sc;
-//}
-
 ckks::CtxtP ckks::relinExt(const Ctxt3P & c, const Param & par, const EkExtP & ek)
 {
     CtxtP r = c.slice(); // slice object
@@ -557,6 +549,23 @@ ckks::CtxtR ckks::relinExt(const Ctxt3R & c, const Param & par, const EkExtR & e
          << " d2ek=" << d2eka << d2ekb << '\n';
     return r;
 }
+
+ckks::CtxtP ckks::mulExtP(const CtxtP& a, const CtxtP& b, const Param& p, const EkExtP& ek)
+{
+    Ctxt3P c3 = mul3(a, b, p);
+    CtxtP c2 = relinExt(c3, p, ek);
+    CtxtP c2sc = rescaleLevel(c2, p);
+    return c2sc;
+}
+
+ckks::CtxtR ckks::mulExtR(const CtxtR& a, const CtxtR& b, const Param& p, const EkExtR& ek, const rns_ns::RnsShrinkRound& datQ)
+{
+    Ctxt3R c3 = mul3(a, b);
+    CtxtR c2 = relinExt(c3, p, ek);
+    CtxtR c2sc = rescaleLevel(c2, datQ);
+    return c2sc;
+}
+
 
 poly::Poly ckks::genPolyRqP(int n, RndStream & rs, Integer q)
 {
