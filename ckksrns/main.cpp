@@ -44,8 +44,8 @@ try
 
     if (1)
     {
-    //    t08_decomp();
-    //    t09_hyb1();
+        //    t08_decomp();
+        //    t09_hyb1();
         //**t10_hyb2();
     }
 }
@@ -731,7 +731,7 @@ void t05_mul2_v1()
     //vector<cx> a = { 3.0, 2.0 };
 
     Param param(2, Integer(1024), Integer(delta), 1);
-    RnsMrs rns{ 1033, 1021 };
+    RnsMrs rns { 1033, 1021 };
     vector<cx> a = { 0.0 };
 
     cout << param.print() << '\n';
@@ -770,9 +770,9 @@ void t05_mul2_v1()
     Ctxt3R ca3r = mul3(car, car);
     c3prn("ca3r", ca3r);
 
-    RnsMrs rnsP{ 521, 457 };
+    RnsMrs rnsP { 521, 457 };
     EkExtP ekp(skp, param, rsP, rnsP.dynrange_());
-    RnsMrs rnsext{ rns, rns_ns::Rns::plus, rnsP };
+    RnsMrs rnsext { rns, rns_ns::Rns::plus, rnsP };
     rns_ns::RnsShrinkRound rshrink(rns, rnsP);
     EkExtR ekr(skr, param, rsR, rnsext, rshrink);
 
@@ -834,7 +834,7 @@ void t05_mul2_v2()
 
     cout << "a =" << a << '\n';
 
-    RnsMrs rns{ 1033, 1009 };
+    RnsMrs rns { 1033, 1009 };
     Poly map = encodeP(param, a);
     PolyRns mar = encodeR(param, a, rns);
 
@@ -863,9 +863,9 @@ void t05_mul2_v2()
     Ctxt3R ca3r = mul3(car, car);
     c3prn("ca3r", ca3r);
 
-    RnsMrs rnsP{ 521, 457 };
+    RnsMrs rnsP { 521, 457 };
     EkExtP ekp(skp, param, rsP, rnsP.dynrange_());
-    RnsMrs rnsext{ rns, rns_ns::Rns::plus, rnsP };
+    RnsMrs rnsext { rns, rns_ns::Rns::plus, rnsP };
     rns_ns::RnsShrinkRound rshrink(rns, rnsP);
     EkExtR ekr(skr, param, rsR, rnsext, rshrink);
 
@@ -906,8 +906,8 @@ void t05_rebase()
     int step = 4;
 
     using namespace rns_ns;
-    RnsMrs rnsa{ 3, 5, 7 };
-    RnsMrs rnsb{ 7, 9, 11 };
+    RnsMrs rnsa { 3, 5, 7 };
+    RnsMrs rnsb { 7, 9, 11 };
 
     auto dyna = rnsa.dynrange_();
 
@@ -922,7 +922,7 @@ void t05_rebase()
         cout << i << '\t' << x.values() << '\t' << y.values() << '\t' << z.values() << '\n';
     }
 
-    RnsMrs rnsc{ 7, 9, 11, 5, 13, 17 };
+    RnsMrs rnsc { 7, 9, 11, 5, 13, 17 };
     auto dynb = rnsb.dynrange_();
 
     for (Integer i = 0; i < dynb; i += dynb / step)
@@ -937,7 +937,7 @@ void t05_rebase()
     }
 
     {
-        RnsMrs rnsQ{ 7 };
+        RnsMrs rnsQ { 7 };
         RnsMrs rnsQP = rnsa;
         RnsMrs rnsP(rnsQP, Rns::minus, rnsQ);
 
@@ -950,7 +950,7 @@ void t05_rebase()
             Integer iy = y.blend_();
             //if (iz != i) never;
             cout << i << '\t' << iy << '\t' << (i / ddynP) << '\t'
-                << x.values() << '\t' << y.values() << '\n';
+                 << x.values() << '\t' << y.values() << '\n';
         }
 
         double ddynQ = rnsQ.dynrangeDbl();
@@ -962,13 +962,13 @@ void t05_rebase()
             Integer iy = y.blend_();
             //if (iz != i) never;
             cout << i << '\t' << iy << '\t' << (i / ddynQ) << '\t'
-                << x.values() << '\t' << y.values() << '\n';
+                 << x.values() << '\t' << y.values() << '\n';
         }
     }
 
     {
-        RnsMrs rnsP{ 7, 9, 11 };
-        RnsMrs rnsQ{ 5, 17, 13 };
+        RnsMrs rnsP { 7, 9, 11 };
+        RnsMrs rnsQ { 5, 17, 13 };
         RnsMrs rnsQP(rnsP, Rns::plus, rnsQ);
 
         double ddynP = rnsP.dynrangeDbl();
@@ -983,7 +983,7 @@ void t05_rebase()
             double r = (i / ddynP);
 
             cout << i << '\t' << iy << '\t' << x.values() << '\t'
-                << y.values() << '\t' << r << '\n';
+                 << y.values() << '\t' << r << '\n';
 
             auto z = (Integer)(r + 0.5);
             auto w = z % dynQ;
@@ -1007,7 +1007,7 @@ void t05_rebase()
             Integer iy = y.blend_();
             //if (iz != i) never;
             cout << i << '\t' << iy << '\t' << x.values() << '\t'
-                << y.values() << '\t' << (i / cbP) << '\n';
+                 << y.values() << '\t' << (i / cbP) << '\n';
         }
     }
 }

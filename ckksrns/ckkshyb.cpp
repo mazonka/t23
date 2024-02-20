@@ -10,7 +10,7 @@ using std::cout;
 
 using poly::Poly;
 
-ckks::EkHybP::EkHybP(int level, SkP sk, Param p, RndStream& rs)
+ckks::EkHybP::EkHybP(int level, SkP sk, Param p, RndStream & rs)
 {
     if (p.w == 0) nevers("Digit size is not set; assign size to 'w'");
     Poly s = sk.s;
@@ -62,42 +62,42 @@ ckks::EkHybP::EkHybP(int level, SkP sk, Param p, RndStream& rs)
 
 string ckks::EkHybP::print() const
 {
-	never;
-	return string();
+    never;
+    return string();
 }
 
-poly::Dpoly poly::WDp(const poly::Poly& a, Integer w, Integer q)
+poly::Dpoly poly::WDp(const poly::Poly & a, Integer w, Integer q)
 {
-	never;
-	return Dpoly();
+    never;
+    return Dpoly();
 }
 
-poly::Dpoly poly::PWp(const poly::Poly& a, Integer w, Integer q)
+poly::Dpoly poly::PWp(const poly::Poly & a, Integer w, Integer q)
 {
-	never;
-	return Dpoly();
+    never;
+    return Dpoly();
 }
 
 int poly::calc_dnumP(Integer w, Integer q)
 {
-	never;
-	return 0;
+    never;
+    return 0;
 }
 
-poly::Poly poly::dotP(const Dpoly& a, const Dpoly& b, Integer q)
+poly::Poly poly::dotP(const Dpoly & a, const Dpoly & b, Integer q)
 {
-	never;
-	return poly::Poly();
+    never;
+    return poly::Poly();
 }
 
-ckks::CtxtP ckks::relinHybP(const Ctxt3P& c, const Param& p, const EkHybP& ek)
+ckks::CtxtP ckks::relinHybP(const Ctxt3P & c, const Param & p, const EkHybP & ek)
 {
-	never;
-	//return CtxtP();
+    never;
+    //return CtxtP();
 }
 
-ckks::CtxtP ckks::mulHybP(const CtxtP& a, const CtxtP& b, const Param& p, const EkHybP& ek)
+ckks::CtxtP ckks::mulHybP(const CtxtP & a, const CtxtP & b, const Param & p, const EkHybP & ek)
 {
-	never;
-	//return CtxtP();
+    never;
+    //return CtxtP();
 }

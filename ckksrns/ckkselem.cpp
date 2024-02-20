@@ -550,7 +550,7 @@ ckks::CtxtR ckks::relinExt(const Ctxt3R & c, const Param & par, const EkExtR & e
     return r;
 }
 
-ckks::CtxtP ckks::mulExtP(const CtxtP& a, const CtxtP& b, const Param& p, const EkExtP& ek)
+ckks::CtxtP ckks::mulExtP(const CtxtP & a, const CtxtP & b, const Param & p, const EkExtP & ek)
 {
     Ctxt3P c3 = mul3(a, b, p);
     CtxtP c2 = relinExt(c3, p, ek);
@@ -558,7 +558,7 @@ ckks::CtxtP ckks::mulExtP(const CtxtP& a, const CtxtP& b, const Param& p, const 
     return c2sc;
 }
 
-ckks::CtxtR ckks::mulExtR(const CtxtR& a, const CtxtR& b, const Param& p, const EkExtR& ek, const rns_ns::RnsShrinkRound& datQ)
+ckks::CtxtR ckks::mulExtR(const CtxtR & a, const CtxtR & b, const Param & p, const EkExtR & ek, const rns_ns::RnsShrinkRound & datQ)
 {
     Ctxt3R c3 = mul3(a, b);
     CtxtR c2 = relinExt(c3, p, ek);

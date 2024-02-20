@@ -159,15 +159,15 @@ void t06_mul1()
     c2prn("cap", cap);
     c2prn("car", car);
 
-    RnsMrs rnsP{ 521, 457 };
+    RnsMrs rnsP { 521, 457 };
     EkExtP ekp(skp, param, rsP, rnsP.dynrange_());
-    RnsMrs rnsext{ rns, rns_ns::Rns::plus, rnsP };
+    RnsMrs rnsext { rns, rns_ns::Rns::plus, rnsP };
     rns_ns::RnsShrinkRound rshrink(rns, rnsP);
     EkExtR ekr(skr, param, rsR, rnsext, rshrink);
 
     Integer qdrop = param.vqs[car.level];
-    RnsMrs rnsL{ qdrop };
-    RnsMrs rnsQ{ rns, rns_ns::Rns::minus, rnsL };
+    RnsMrs rnsL { qdrop };
+    RnsMrs rnsQ { rns, rns_ns::Rns::minus, rnsL };
     rns_ns::RnsShrinkRound datQ(rnsQ, rnsL);  // FIXME embed Rns cascade into params
 
     CtxtP ca2scP = mulExtP(cap, cap, param, ekp);
@@ -179,7 +179,7 @@ void t06_mul1()
     ///cout << "md2 = " << md2 << '\n';
     ///auto a22 = decode(param, md2);
     ///cout << "a22 =" << roundv(1e-2, a22) << '\n';
-    /// 
+    ///
     Poly md2p = decryptP(skp, ca2scP, param);
     cout << "md2p = " << md2p << '\n';
     PolyRns md2r = decryptR(skr, ca2scR, param);
