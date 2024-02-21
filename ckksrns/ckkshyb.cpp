@@ -1,5 +1,6 @@
 #include <cmath>
 #include <sstream>
+#include <algorithm>
 
 #include <iostream> // debug
 using std::cout;
@@ -10,8 +11,9 @@ using std::cout;
 #include "egcd.inc"
 
 using poly::Poly;
+using poly::PolyRns;
 
-ckks::EkHybP::EkHybP(int level, SkP sk, Param p, RndStream & rs)
+ckks::EkHybP::EkHybP(int lev, SkP sk, Param p, RndStream & rs) : level(lev)
 {
     if (p.w == 0) nevers("Digit size is not set; assign size to 'w'");
     Poly s = sk.s;
@@ -59,6 +61,85 @@ ckks::EkHybP::EkHybP(int level, SkP sk, Param p, RndStream & rs)
         db[i] = add(x3, x5, q);
     }
 }
+
+Integer ckks::EkHybR::findExtDigit(const vint& qs, int n)
+{
+    Integer in(n), iU(1);
+
+    Integer P = *std::max_element(qs.begin(), qs.end());
+    ++P;
+
+    // find P for extension
+    for (int i = 0; i < 10000000; i++, ++P)
+    {
+        if (gcdT(P, in) != iU) continue; // ntt requires inversion n in PQ
+        if (!isPrime(P)) continue;
+        break;
+    }
+    return P;
+}
+
+ckks::EkHybR::EkHybR(SkR sk, Param p, RndStream& rs, rns_ns::Rns& rext, rns_ns::RnsShrinkRound rshrink) ///: level(lev)
+{
+    ///if (p.w == 0) nevers("Digit size is not set; assign size to 'w'");
+    PolyRns s = sk.s;
+    ///int n = s.polysize();
+    ///Integer in(n), iU(1);
+
+    ///ql = p.q_(level);
+    ///P = p.w;
+
+    ///vint qs = p.vqs;
+    ///qs.resize(level+1);
+
+    ///P = *std::max_element(qs.begin(),qs.end());
+    ///++P;
+
+    // find P for extension
+    //for (int i = 0; i < 10000000; i++, ++P)
+    //{
+    //    if (gcdT(P, in) != iU) continue; // ntt requires inversion n in PQ
+    //    if (!isPrime(P)) continue;
+    //    break;
+    //}
+
+    ///qs.push_back(P);
+
+    //auto PQl = P * ql;
+    //const auto& q = PQl;
+
+    //int dnum = poly::calc_dnumP(p.w, q); // ql - doesnt work, error in paper
+    int dnum = rext.size();
+    auto qs = rext.getQs();
+
+    da.resize(dnum);
+    db.resize(dnum);
+    poly::Dpoly e(dnum);
+    for (int i = 0; i < dnum; i++)
+    {
+        da[i] = genPolyRqP(sk.n, rs, qs[i]);
+        e[i] = genPolyErP(sk.n, rs);
+        e[i] = rangeUpP(e[i], qs[i]);
+    }
+
+    never;
+
+    //s = rangeUpP(s, q);
+    //auto s2 = mul(s, s, q);
+    //auto ds2 = poly::PWp(s2, p.w, q);
+
+    //// b = -a*SK + e + P*SK*SK
+    //// a = a
+    //for (int i = 0; i < dnum; i++)
+    //{
+    //    auto x1 = neg(da[i], q);
+    //    auto x2 = mul(x1, s, q);
+    //    auto x3 = add(x2, e[i], q);
+    //    Poly x5 = mul(ds2[i], P, q);
+    //    db[i] = add(x3, x5, q);
+    //}
+}
+
 
 string ckks::EkHybP::print() const
 {
@@ -146,3 +227,4 @@ ckks::CtxtP ckks::mulHybP(const CtxtP & a, const CtxtP & b, const Param & p, con
     CtxtP c2sc = rescaleLevel(c2, p);
     return c2sc;
 }
+

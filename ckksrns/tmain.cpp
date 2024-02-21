@@ -175,11 +175,6 @@ void t06_mul1()
     c2prn("ca2scP", ca2scP);
     c2prn("ca2scR", ca2scR);
 
-    ///Poly md2 = decrypt(sk, ca2sc, param);
-    ///cout << "md2 = " << md2 << '\n';
-    ///auto a22 = decode(param, md2);
-    ///cout << "a22 =" << roundv(1e-2, a22) << '\n';
-    ///
     Poly md2p = decryptP(skp, ca2scP, param);
     cout << "md2p = " << md2p << '\n';
     PolyRns md2r = decryptR(skr, ca2scR, param);
@@ -211,23 +206,44 @@ void t10_hyb2()
 
     cout << "a =" << a << '\n';
 
+    RnsMrs rns(param.vqs);
     Poly map = encodeP(param, a);
+    PolyRns mar = encodeR(param, a, rns);
 
     cout << "map = " << map << '\n';
+    cout << "mar = " << mar << '\n';
 
-    RndStream rs;
-    SkP skp(rs, param.penc.n);
+    RndStream rsP, rsR;
+    SkP skp(rsP, param.penc.n);
+    SkR skr(rsR, param.penc.n, rns);
 
-    CtxtP cap = encryptP(skp, map, param, rs);
-    cout << "cap.c0 = " << cap.c0 << '\n';
-    cout << "cap.c1 = " << cap.c1 << '\n';
+    auto c2prn = [](string nm, auto c)
+    {
+        cout << nm << " = " << c.c0 << c.c1 << '\n';
+    };
+
+    CtxtP cap = encryptP(skp, map, param, rsP);
+    CtxtR car = encryptR(skr, mar, param, rsR);
+    c2prn("cap", cap);
+    c2prn("car", car);
 
     param.w = 16;
-    EkHybP ekp(1, skp, param, rs);
+    EkHybP ekp(1, skp, param, rsP);
+
+    Integer extP = EkHybR::findExtDigit(rns.getQs(), car.c0.polysize());
+    RnsMrs rnsP{ extP };
+    RnsMrs rnsext{ rns, rns_ns::Rns::plus, rnsP };
+    rns_ns::RnsShrinkRound rshrink(rns, rnsP);
+    ///EkHybR ekr(1, skr, param, rsR);
+    //EkHybR ekr(skr, param, rsR, rnsext, rshrink);
+
+    Integer qdrop = param.vqs[car.level];
+    RnsMrs rnsL{ qdrop };
+    RnsMrs rnsQ{ rns, rns_ns::Rns::minus, rnsL };
+    rns_ns::RnsShrinkRound datQ(rnsQ, rnsL);  // FIXME embed Rns cascade into params
 
     CtxtP ca2p = mulHybP(cap, cap, param, ekp);
-    cout << "ca2p.c0 = " << ca2p.c0 << '\n';
-    cout << "ca2p.c1 = " << ca2p.c1 << '\n';
+    c2prn("ca2p", ca2p);
 
     Poly md2p = decryptP(skp, ca2p, param);
     cout << "md2p = " << md2p << '\n';
