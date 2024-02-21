@@ -44,7 +44,7 @@ try
 
     if (1)
     {
-        //    t08_decomp();
+        t08_decomp();
         //    t09_hyb1();
         t10_hyb2();
     }

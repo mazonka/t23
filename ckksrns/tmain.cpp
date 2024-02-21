@@ -250,3 +250,65 @@ void t10_hyb2()
     auto a22p = decodeP(param, md2p);
     cout << "a22p =" << roundv(1e-2, a22p) << '\n';
 }
+
+void t08_decomp()
+{
+    cout << "\n>>> " << __func__ << '\n';
+
+    using namespace ckks;
+    using namespace std::complex_literals;
+
+    Integer delta(64);
+    Param param(4, Integer(1024), Integer(delta), 1);
+    cout << param.print() << '\n';
+
+    vector<cx> a = { 0.5, 2.0 };
+    vector<cx> b = { 3.0, 1.0 };
+
+    cout << "a =" << a << '\n';
+    cout << "b =" << b << '\n';
+
+    Poly map = encodeP(param, a);
+    Poly mbp = encodeP(param, b);
+
+    cout << "map = " << map << '\n';
+    cout << "mbp = " << mbp << '\n';
+
+    {
+        cout << "\nsimple\n";
+        Poly mcSc = poly::mul_simple(map, mbp);
+        Poly mc = rescaleRound(mcSc, param.penc.idelta);
+
+        cout << "mc = ma*mb = " << mc << '\n';
+
+        vector<cx> c = decodeP(param, mc);
+        cout << "c =" << roundv(1e-2, c) << '\n';
+    }
+
+    auto qL = param.qL_();
+
+    param.w = 16;
+
+    {
+        cout << "\ndecomposition\n";
+        auto maU = rangeUpP(map, qL);
+        auto mbU = rangeUpP(mbp, qL);
+        Poly mcSc = poly::mul(maU, mbU, qL);
+
+        cout << '\n';
+        if (param.w == Integer(0)) never;
+
+        auto wda = poly::WDp(maU, param.w, qL);
+        cout << "wda = \n";
+        for (auto x : wda) cout << " " << x << '\n';
+
+        auto pwb = poly::PWp(mbU, param.w, qL);
+        cout << "pwb = \n";
+        for (auto x : pwb) cout << " " << x << '\n';
+
+        Poly ab = poly::dotP(wda, pwb, qL);
+        cout << "ab = " << ab << '\n';
+        cout << "<> = " << mcSc << '\n';
+    }
+
+}

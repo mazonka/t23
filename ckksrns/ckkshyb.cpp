@@ -122,11 +122,11 @@ ckks::EkHybR::EkHybR(SkR sk, Param p, RndStream & rs, rns_ns::Rns & rext, rns_ns
         e[i] = rangeUpP(e[i], qs[i]);
     }
 
-    never;
 
-    //s = rangeUpP(s, q);
-    //auto s2 = mul(s, s, q);
-    //auto ds2 = poly::PWp(s2, p.w, q);
+    ///s = rangeUpP(s, q);
+    auto s2 = mul(s, s);
+    never;
+    //auto ds2 = poly::PWr(s2, p.w, q);
 
     //// b = -a*SK + e + P*SK*SK
     //// a = a
