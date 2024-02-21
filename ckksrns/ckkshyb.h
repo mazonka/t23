@@ -24,10 +24,10 @@ struct EkHybR
     ///int level;
     Integer P, ql;
     poly::Dpoly db, da;
-    EkHybR(SkR sk, Param p, RndStream& rs, rns_ns::Rns& rext, rns_ns::RnsShrinkRound rshrink);
+    EkHybR(SkR sk, Param p, RndStream & rs, rns_ns::Rns & rext, rns_ns::RnsShrinkRound rshrink);
     string print() const;
 
-    static Integer findExtDigit(const vint& v, int n);
+    static Integer findExtDigit(const vint & v, int n);
 };
 
 } // ckks

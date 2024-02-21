@@ -62,7 +62,7 @@ ckks::EkHybP::EkHybP(int lev, SkP sk, Param p, RndStream & rs) : level(lev)
     }
 }
 
-Integer ckks::EkHybR::findExtDigit(const vint& qs, int n)
+Integer ckks::EkHybR::findExtDigit(const vint & qs, int n)
 {
     Integer in(n), iU(1);
 
@@ -79,7 +79,7 @@ Integer ckks::EkHybR::findExtDigit(const vint& qs, int n)
     return P;
 }
 
-ckks::EkHybR::EkHybR(SkR sk, Param p, RndStream& rs, rns_ns::Rns& rext, rns_ns::RnsShrinkRound rshrink) ///: level(lev)
+ckks::EkHybR::EkHybR(SkR sk, Param p, RndStream & rs, rns_ns::Rns & rext, rns_ns::RnsShrinkRound rshrink) ///: level(lev)
 {
     ///if (p.w == 0) nevers("Digit size is not set; assign size to 'w'");
     PolyRns s = sk.s;

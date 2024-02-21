@@ -231,15 +231,15 @@ void t10_hyb2()
     EkHybP ekp(1, skp, param, rsP);
 
     Integer extP = EkHybR::findExtDigit(rns.getQs(), car.c0.polysize());
-    RnsMrs rnsP{ extP };
-    RnsMrs rnsext{ rns, rns_ns::Rns::plus, rnsP };
+    RnsMrs rnsP { extP };
+    RnsMrs rnsext { rns, rns_ns::Rns::plus, rnsP };
     rns_ns::RnsShrinkRound rshrink(rns, rnsP);
     ///EkHybR ekr(1, skr, param, rsR);
     //EkHybR ekr(skr, param, rsR, rnsext, rshrink);
 
     Integer qdrop = param.vqs[car.level];
-    RnsMrs rnsL{ qdrop };
-    RnsMrs rnsQ{ rns, rns_ns::Rns::minus, rnsL };
+    RnsMrs rnsL { qdrop };
+    RnsMrs rnsQ { rns, rns_ns::Rns::minus, rnsL };
     rns_ns::RnsShrinkRound datQ(rnsQ, rnsL);  // FIXME embed Rns cascade into params
 
     CtxtP ca2p = mulHybP(cap, cap, param, ekp);
