@@ -31,15 +31,14 @@ Integer y(Integer x, int pw)
 
 void cmain()
 {
-    mod = 107;
+    mod = 257;
 
     for ( Integer i = 0; i < mod; i++ )
     {
-        auto j = mod - i;
-        if( i==0 ) j=0;
+        auto j = i?mod - i:0;
         cout << i
              << '\t' << y(i, -1)
-             << '\t' << (y(i, -1)+y(j,-1))
+             //<< '\t' << (mod%(i?i:1))
              << '\t' << y(i, 1)
              << '\t' << y(i, 2)
              << '\t' << y(i, 3)
