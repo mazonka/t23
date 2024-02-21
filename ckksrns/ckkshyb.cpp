@@ -27,7 +27,7 @@ ckks::EkHybP::EkHybP(int level, SkP sk, Param p, RndStream & rs)
             break;
 
     auto PQl = P * ql;
-    const auto& q = PQl;
+    const auto & q = PQl;
 
     int dnum = poly::calc_dnumP(p.w, q); // ql - doesnt work, error in paper
 
