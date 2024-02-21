@@ -4,6 +4,7 @@ const int TESTNPRIMES = 3;
 
 bool isPrime(Integer x);
 
+
 Integer factor_ferma(Integer x);
 Integer factor_root(Integer x);
 Integer factor_pollard_pm1(Integer x);

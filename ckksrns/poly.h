@@ -44,7 +44,7 @@ inline Poly mul(Poly a, Poly b, Integer q)
 Poly add(Poly a, Poly b, Integer q);
 Poly rescaleRound(const Poly & a, Integer idelta);
 Poly rescaleRoundLevel(const Poly & a, Integer idelta);
-//Poly rescaleFloor(const Poly & a, Integer w);
+Poly rescaleFloor(const Poly & a, Integer w);
 Poly mul(Poly a, Integer b, Integer q);
 Poly div(Poly a, Integer b, Integer q);
 Poly scaleUp(const Poly & a, Integer Q, Integer P, Integer PQ);

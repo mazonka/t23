@@ -193,13 +193,12 @@ poly::Poly poly::rescaleRoundLevel(const Poly & a, Integer idelta)
     return r;
 }
 
-
-//poly::Poly poly::rescaleFloor(const Poly & a, Integer w)
-//{
-//    Poly r(a);
-//    for (auto & x : r.v) x /= w;
-//    return r;
-//}
+poly::Poly poly::rescaleFloor(const Poly & a, Integer w)
+{
+    Poly r(a);
+    for (auto & x : r.v) x /= w;
+    return r;
+}
 
 poly::Poly poly::mul(Poly a, Integer b, Integer q)
 {
