@@ -22,8 +22,9 @@ struct EkHybP
 struct EkHybR
 {
     ///int level;
-    Integer P, ql;
-    poly::Dpoly db, da;
+    ///Integer P, ql;
+    poly::PolyRns db, da;
+    rns_ns::RnsShrinkRound rshrink;
     EkHybR(SkR sk, Param p, RndStream & rs, rns_ns::Rns & rext, rns_ns::RnsShrinkRound rshrink);
     string print() const;
 
@@ -50,6 +51,8 @@ PolyRns dotR(const PolyRns & a, const PolyRns & b);
 namespace ckks
 {
 CtxtP relinHybP(const Ctxt3P & c, const Param & p, const EkHybP & ek);
+CtxtR relinHybR(const Ctxt3R & c, const Param & p, const EkHybR & ek);
 CtxtP mulHybP(const CtxtP & a, const CtxtP & b, const Param & p, const EkHybP & ek);
+CtxtR mulHybR(const CtxtR & a, const CtxtR & b, const Param & p, const EkHybR & ek, const rns_ns::RnsShrinkRound & datQ);
 } // ckks
 

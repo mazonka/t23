@@ -94,7 +94,7 @@ void t05_mul2()
         cout << "a22rU =" << roundv(1e-2, a22r * (1. / id)) << '\n';
     }
 
-    CtxtP ca2scP = rescaleLevel(ca2p, param);
+    CtxtP ca2scP = rescaleLevelP(ca2p, param);
     c2prn("ca2scP", ca2scP);
 
     Integer qdrop = param.vqs[ca2r.level];
@@ -102,7 +102,7 @@ void t05_mul2()
     RnsMrs rnsQ { rns, rns_ns::Rns::minus, rnsL};
     rns_ns::RnsShrinkRound datQ(rnsQ, rnsL);
 
-    CtxtR ca2scR = rescaleLevel(ca2r, datQ);
+    CtxtR ca2scR = rescaleLevelR(ca2r, datQ);
     c2prn("ca2scR", ca2scR);
 
     Poly md2p = decryptP(skp, ca2scP, param);
@@ -235,7 +235,7 @@ void t10_hyb2()
     RnsMrs rnsext { rns, rns_ns::Rns::plus, rnsP };
     rns_ns::RnsShrinkRound rshrink(rns, rnsP);
     ///EkHybR ekr(1, skr, param, rsR);
-    //EkHybR ekr(skr, param, rsR, rnsext, rshrink);
+    EkHybR ekr(skr, param, rsR, rnsext, rshrink);
 
     Integer qdrop = param.vqs[car.level];
     RnsMrs rnsL { qdrop };
@@ -245,10 +245,18 @@ void t10_hyb2()
     CtxtP ca2p = mulHybP(cap, cap, param, ekp);
     c2prn("ca2p", ca2p);
 
+    CtxtR ca2r = mulHybR(car, car, param, ekr, datQ);
+    c2prn("ca2r", ca2r);
+
     Poly md2p = decryptP(skp, ca2p, param);
     cout << "md2p = " << md2p << '\n';
+    auto md2r = decryptR(skr, ca2r, param);
+    cout << "md2r = " << md2r << '\n';
+
     auto a22p = decodeP(param, md2p);
     cout << "a22p =" << roundv(1e-2, a22p) << '\n';
+    auto a22r = decodeR(param, md2r, rns);
+    cout << "a22r =" << roundv(1e-2, a22r) << '\n';
 }
 
 void t08_decomp()

@@ -180,9 +180,9 @@ Ctxt3R mul3(const CtxtR & a, const CtxtR & b);
 Ctxt3P rescale(const Ctxt3P & c, Integer idelta, Param par);
 Ctxt3R rescale(const Ctxt3R & c, Integer idelta);
 CtxtP rescale(const CtxtP & c, Integer idelta, Param par);
-CtxtP rescaleLevel(const CtxtP & c, Param par);
+CtxtP rescaleLevelP(const CtxtP & c, Param par);
 CtxtR rescale(const CtxtR & c, Integer idelta, Param par);
-CtxtR rescaleLevel(const CtxtR & c, const rns_ns::RnsShrinkRound & dat);
+CtxtR rescaleLevelR(const CtxtR & c, const rns_ns::RnsShrinkRound & dat);
 
 struct EkExtP
 {

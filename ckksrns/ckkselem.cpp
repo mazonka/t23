@@ -471,7 +471,7 @@ ckks::CtxtP ckks::rescale(const CtxtP & c, Integer idelta, Param par)
     return CtxtP(c.level, c0, c1);
 }
 
-ckks::CtxtP ckks::rescaleLevel(const CtxtP & c, Param par)
+ckks::CtxtP ckks::rescaleLevelP(const CtxtP & c, Param par)
 {
     int level = c.level;
     if (level < 1) nevers("negative level");
@@ -491,7 +491,7 @@ ckks::CtxtR ckks::rescale(const CtxtR & c, Integer idelta, Param par)
     return CtxtR(lv, c0, c1);
 }
 
-ckks::CtxtR ckks::rescaleLevel(const CtxtR & c, const rns_ns::RnsShrinkRound & dat)
+ckks::CtxtR ckks::rescaleLevelR(const CtxtR & c, const rns_ns::RnsShrinkRound & dat)
 {
     int lv = c.level;
     if (lv < 1) nevers("negative level");
@@ -554,7 +554,7 @@ ckks::CtxtP ckks::mulExtP(const CtxtP & a, const CtxtP & b, const Param & p, con
 {
     Ctxt3P c3 = mul3(a, b, p);
     CtxtP c2 = relinExt(c3, p, ek);
-    CtxtP c2sc = rescaleLevel(c2, p);
+    CtxtP c2sc = rescaleLevelP(c2, p);
     return c2sc;
 }
 
@@ -562,7 +562,7 @@ ckks::CtxtR ckks::mulExtR(const CtxtR & a, const CtxtR & b, const Param & p, con
 {
     Ctxt3R c3 = mul3(a, b);
     CtxtR c2 = relinExt(c3, p, ek);
-    CtxtR c2sc = rescaleLevel(c2, datQ);
+    CtxtR c2sc = rescaleLevelR(c2, datQ);
     return c2sc;
 }
 
