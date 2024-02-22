@@ -287,9 +287,13 @@ PolyRns poly::dotR(const PolyRns & a, const PolyRns & b)
     PolyRns r(rns);
     for (int i = 0; i < ntows; ++i)
     {
-        Poly s = poly::mul(a.towers[i], b.towers[i], qs[i]);
+        const auto& at = a.towers[i];
+        const auto& bt = b.towers[i];
+        Poly s = poly::mul(at, bt, qs[i]);
         ///r = poly::add(r, s, q);
         r.towers.push_back(s);
+        cout << "AAA " << __func__ << i << " r=" << r.towers.back() << '\n';
+        cout << " at,bt,s " << at << bt << s << '\n';
     }
     return r;
 }
@@ -348,11 +352,12 @@ ckks::CtxtR ckks::relinHybR(const Ctxt3R & c, const Param & p, const EkHybR & ek
     auto pb = d2ekb.shrink(ek.rshrink);
     r.c0 = add(r.c0, pb);
     r.c1 = add(r.c1, pa);
-    cout << "AAA " << __func__ << " d2=" << d2
-         << " ek:a:b=" << ek.da << ek.db
-         << " d2ek=" << d2eka << d2ekb << '\n';
+    cout << "AAA " << __func__ << " d2=" << d2 << '\n';
+    cout << " ek:a:b=" << ek.da << ek.db << '\n';     
+    cout << " wd2=" << wd2 << '\n';
+    cout << " d2ek=" << d2eka << d2ekb << '\n';
+    cout << " pa,pb=" << pa << pb << '\n';
     return r;
-
 }
 
 ckks::CtxtP ckks::mulHybP(const CtxtP & a, const CtxtP & b, const Param & p, const EkHybP & ek)

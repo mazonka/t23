@@ -38,7 +38,7 @@ void t10_hyb2_b1()
     Param param(2, Integer(1024), Integer(delta_), 1);
     cout << param.print() << '\n';
 
-    vector<cx> a = { 0.0 };
+    vector<cx> a = { 0.80 };
     //vector<cx> a = { 0.8, 0.5 };
 
     cout << "a =" << a << '\n';

@@ -808,7 +808,20 @@ Integer ckks::RndStream::getEr()
     if (0) return Integer(0);
     //return Integer(0); // FIXME *************************************
     int & a = er;
-    return Integer((++a) % 5 - 2);
+    ++a;
+    if (a == 0) return Integer(0); // FIXME *************************************
+    if (a == 1) return Integer(0); // FIXME *************************************
+    if (a == 2) return Integer(0); // FIXME *************************************
+    if (a == 3) return Integer(0); // FIXME *************************************
+    if (a == 4) return Integer(0); // critical if0 then correct FIXME *************************************
+    //if (a == 5) return Integer(0); // FIXME *************************************
+    //if (a == 6) return Integer(0); // FIXME *************************************
+    //if (a == 7) return Integer(0); // FIXME *************************************
+    //if (a == 8) return Integer(0); // FIXME *************************************
+    //if (a == 9) return Integer(0); // FIXME *************************************
+    //if (a == 10) return Integer(0); // FIXME *************************************
+    //if (a == 11) return Integer(0); // FIXME *************************************
+    return Integer(a % 5 - 2);
 }
 
 ckks::PkP::PkP(SkP sk, Param p, RndStream & rs)
