@@ -250,8 +250,21 @@ PolyRns poly::PWr(const PolyRns & a)
 
 PolyRns poly::dotR(const PolyRns & a, const PolyRns & b)
 {
-    never;
-    //return PolyRns();
+    const rns_ns::Rns * rns = a.rns_ptr;
+    vint qs = rns->getQs();
+    int ntows = a.ntows();
+    if (ntows != b.ntows()) never;
+
+    auto n = a.polysize();
+
+    PolyRns r(rns);
+    for (int i = 0; i < ntows; ++i)
+    {
+        Poly s = poly::mul(a.towers[i], b.towers[i], qs[i]);
+        ///r = poly::add(r, s, q);
+        r.towers.push_back(s);
+    }
+    return r;
 }
 
 ckks::CtxtP ckks::relinHybP(const Ctxt3P & c, const Param & par, const EkHybP & ek)
