@@ -519,8 +519,8 @@ ckks::CtxtP ckks::relinExtP(const Ctxt3P & c, const Param & par, const EkExtP & 
     auto pb = div(d2ekb, ek.P, pq);
     r.c0 = add(r.c0, pb, q);
     r.c1 = add(r.c1, pa, q);
-    cout << "AAA " << __func__ << " d2=" << d2
-         << " ek:a:b=" << ek.a << ek.b
+    cout << "AAA " << __func__ << " d2=" << d2 << '\n'
+         << " ek:a:b=" << ek.a << ek.b << '\n'
          << " d2ek=" << d2eka << d2ekb << '\n';
     return r;
 }
@@ -544,8 +544,8 @@ ckks::CtxtR ckks::relinExtR(const Ctxt3R & c, const Param & par, const EkExtR & 
     auto pb = d2ekb.shrink(ek.rshrink);
     r.c0 = add(r.c0, pb);
     r.c1 = add(r.c1, pa);
-    cout << "AAA " << __func__ << " d2=" << d2
-         << " ek:a:b=" << ek.a << ek.b
+    cout << "AAA " << __func__ << " d2=" << d2 << '\n'
+         << " ek:a:b=" << ek.a << ek.b << '\n'
          << " d2ek=" << d2eka << d2ekb << '\n';
     return r;
 }
