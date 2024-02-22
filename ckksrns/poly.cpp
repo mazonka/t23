@@ -412,16 +412,21 @@ poly::PolyRns poly::mul(const PolyRns & a, rns_ns::RnsForm b)
 poly::PolyRns poly::mul_simple(const PolyRns & a, const PolyRns & b)
 {
     if (!a.match(b)) never;
-    PolyRns r(a.rns_ptr);
+    auto rns = a.rns_ptr;
+    PolyRns r(rns);
+    auto qs = rns->getQs();
     for (int i = 0; i < a.ntows(); i++)
-        r.towers.emplace_back(mul_simple(a.towers[i], b.towers[i]));
+    {
+        auto c = mul_simple(a.towers[i], b.towers[i]);
+        auto c1 = rangeUpP(c, qs[i]);
+        auto c2 = rangeDownP(c1, qs[i]);
+        r.towers.emplace_back(c2);
+    }
     return r;
 }
 
 poly::PolyRns poly::rescaleRoundRns(const PolyRns & a, Integer idelta)
 {
-    ///never;
-    ///return PolyRns();
     using rns_ns::RnsForm;
     auto d2 = idelta / 2;
     PolyRns r(a.rns_ptr);

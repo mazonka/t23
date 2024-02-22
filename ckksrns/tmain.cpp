@@ -259,12 +259,14 @@ void t08_decomp()
     using namespace std::complex_literals;
     using rns_ns::RnsMrs;
 
-    Integer delta_(1024);
+    Integer delta_(64);
     Param param(4, Integer(1024), Integer(delta_), 1);
     cout << param.print() << '\n';
 
-    vector<cx> a = { 0.5, 2.0 };
-    vector<cx> b = { 3.0, 1.0 };
+    //vector<cx> a = { 0.5, 2.0 };
+    //vector<cx> b = { 3.0, 1.0 };
+    vector<cx> a = { 0.5, 1.0 };
+    vector<cx> b = { 1.0, 0.8 };
 
     cout << "a =" << a << '\n';
     cout << "b =" << b << '\n';
@@ -272,25 +274,37 @@ void t08_decomp()
     Poly map = encodeP(param, a);
     Poly mbp = encodeP(param, b);
 
-    cout << "map = " << map << '\n';
-    cout << "mbp = " << mbp << '\n';
-
     RnsMrs rns(param.vqs);
     PolyRns mar = encodeR(param, a, rns);
     PolyRns mbr = encodeR(param, b, rns);
 
+    cout << "map = " << map << '\n';
     cout << "mar = " << mar << '\n';
+
+    cout << "mbp = " << mbp << '\n';
     cout << "mbr = " << mbr << '\n';
 
     {
         cout << "\nsimple\n";
-        Poly mcSc = poly::mul_simple(map, mbp);
-        Poly mc = rescaleRound(mcSc, param.penc.idelta);
+        auto dynrange = rns.dynrange_();
+        Poly mcScp = poly::mul_simple(map, mbp);
+        //mcScp = rangeDownP(mcScp, dynrange);
+        PolyRns mcScr = poly::mul_simple(mar, mbr);
 
-        cout << "mc = ma*mb = " << mc << '\n';
+        cout << "mcScp = " << mcScp << '\n';
+        cout << "mcScpU= " << rangeUpP(mcScp, dynrange) << '\n';
+        cout << "mcScr = " << mcScr << '\n';
 
-        vector<cx> c = decodeP(param, mc);
-        cout << "c =" << roundv(1e-2, c) << '\n';
+        Poly mcp = rescaleRound(mcScp, param.penc.idelta);
+        PolyRns mcr = rescaleRoundRns(mcScr, param.penc.idelta);
+
+        cout << "mcp = ma*mb = " << mcp << '\n';
+        cout << "mcr = ma*mb = " << mcr << '\n';
+
+        vector<cx> cp = decodeP(param, mcp);
+        cout << "cp =" << roundv(1e-2, cp) << '\n';
+        vector<cx> cr = decodeR(param, mcr, rns);
+        cout << "cr =" << roundv(1e-2, cr) << '\n';
     }
 
     auto qL = param.qL_();
@@ -299,24 +313,29 @@ void t08_decomp()
 
     {
         cout << "\ndecomposition\n";
-        auto maU = rangeUpP(map, qL);
-        auto mbU = rangeUpP(mbp, qL);
-        Poly mcSc = poly::mul(maU, mbU, qL);
+        auto maUp = rangeUpP(map, qL);
+        auto mbUp = rangeUpP(mbp, qL);
+        Poly mcScp = poly::mul(maUp, mbUp, qL);
+        cout << "mcScp = " << mcScp << '\n';
+        PolyRns mcScr = poly::mul(mar, mbr);
+        cout << "mcScr = " << mcScr << '\n';
+
+        //***
 
         cout << '\n';
         if (param.w == Integer(0)) never;
 
-        auto wda = poly::WDp(maU, param.w, qL);
-        cout << "wda = \n";
-        for (auto x : wda) cout << " " << x << '\n';
+        auto wdap = poly::WDp(maUp, param.w, qL);
+        cout << "wdap = \n";
+        for (auto x : wdap) cout << " " << x << '\n';
 
-        auto pwb = poly::PWp(mbU, param.w, qL);
-        cout << "pwb = \n";
-        for (auto x : pwb) cout << " " << x << '\n';
+        auto pwbp = poly::PWp(mbUp, param.w, qL);
+        cout << "pwbp = \n";
+        for (auto x : pwbp) cout << " " << x << '\n';
 
-        Poly ab = poly::dotP(wda, pwb, qL);
-        cout << "ab = " << ab << '\n';
-        cout << "<> = " << mcSc << '\n';
+        Poly abp = poly::dotP(wdap, pwbp, qL);
+        cout << "abp = " << abp << '\n';
+        cout << "<p> = " << mcScp << '\n';
     }
 
 }
