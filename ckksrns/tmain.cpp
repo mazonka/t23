@@ -257,9 +257,10 @@ void t08_decomp()
 
     using namespace ckks;
     using namespace std::complex_literals;
+    using rns_ns::RnsMrs;
 
-    Integer delta(64);
-    Param param(4, Integer(1024), Integer(delta), 1);
+    Integer delta_(1024);
+    Param param(4, Integer(1024), Integer(delta_), 1);
     cout << param.print() << '\n';
 
     vector<cx> a = { 0.5, 2.0 };
@@ -273,6 +274,13 @@ void t08_decomp()
 
     cout << "map = " << map << '\n';
     cout << "mbp = " << mbp << '\n';
+
+    RnsMrs rns(param.vqs);
+    PolyRns mar = encodeR(param, a, rns);
+    PolyRns mbr = encodeR(param, b, rns);
+
+    cout << "mar = " << mar << '\n';
+    cout << "mbr = " << mbr << '\n';
 
     {
         cout << "\nsimple\n";
