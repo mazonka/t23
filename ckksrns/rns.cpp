@@ -155,6 +155,7 @@ void rns_ns::Rns::initV(const vint & ve)
             }
         Ms_.push_back(m_);
         us.push_back(modinv(m, q));
+        ms.push_back(m);
     }
 
     maxPow2digit = -1;

@@ -320,22 +320,28 @@ void t08_decomp()
         PolyRns mcScr = poly::mul(mar, mbr);
         cout << "mcScr = " << mcScr << '\n';
 
-        //***
-
         cout << '\n';
         if (param.w == Integer(0)) never;
 
         auto wdap = poly::WDp(maUp, param.w, qL);
-        cout << "wdap = \n";
-        for (auto x : wdap) cout << " " << x << '\n';
+        cout << "wdap ="; for (auto x : wdap) cout << " " << x; cout << '\n';
 
         auto pwbp = poly::PWp(mbUp, param.w, qL);
-        cout << "pwbp = \n";
-        for (auto x : pwbp) cout << " " << x << '\n';
+        cout << "pwbp ="; for (auto x : pwbp) cout << " " << x; cout << '\n';
+
+        PolyRns wdar = poly::WDr(mar);
+        cout << "wdar = " << wdar << '\n';
+
+        PolyRns pwbr = poly::PWr(mbr);
+        cout << "pdbr = " << pwbr << '\n';
+
 
         Poly abp = poly::dotP(wdap, pwbp, qL);
         cout << "abp = " << abp << '\n';
         cout << "<p> = " << mcScp << '\n';
+
+        PolyRns abr = poly::dotR(wdar, pwbr);
+        cout << "abr = " << abr << '\n';
     }
 
 }

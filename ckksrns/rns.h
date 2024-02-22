@@ -15,7 +15,7 @@ class RnsForm;
 class Rns
 {
     protected:
-        vint qs, Ms_, us;
+        vint qs, Ms_, us, ms; // us=mu's, ms=|Mi|_qi
         Integer maxPow2digit = -1;
         vint neg(vint v) const;
         vint split(Integer x) const;
@@ -45,7 +45,11 @@ class Rns
         double dynrangeDbl() const;
         Integer q(int i) const { return qs[i]; }
         virtual vint mrs(const vint & v) const = 0;
+
         vint getQs() const { return qs; }
+        vint getMs() const { return ms; }
+        vint getUs() const { return us; }
+
         void div2exact(vint & v) const;
 
     public:

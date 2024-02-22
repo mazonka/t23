@@ -39,9 +39,11 @@ namespace poly
 Dpoly WDp(const poly::Poly & a, Integer w, Integer q);
 Dpoly PWp(const poly::Poly & a, Integer w, Integer q);
 int calc_dnumP(Integer w, Integer q);
-poly::Poly dotP(const Dpoly & a, const Dpoly & b, Integer q);
+Poly dotP(const Dpoly & a, const Dpoly & b, Integer q);
 
-Dpoly PWr(const poly::Poly & a, Integer w, Integer q);
+PolyRns WDr(const PolyRns & a);
+PolyRns PWr(const PolyRns & a);
+PolyRns dotR(const PolyRns & a, const PolyRns & b);
 
 } //poly
 

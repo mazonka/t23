@@ -194,6 +194,66 @@ poly::Poly poly::dotP(const Dpoly & a, const Dpoly & b, Integer q)
     return r;
 }
 
+PolyRns poly::WDr(const PolyRns & a)
+{
+    const rns_ns::Rns * rns = a.rns_ptr;
+    vint qs = rns->getQs();
+    //vint ms = rns->getMs();
+    vint us = rns->getUs();
+
+    int ntows = a.ntows();
+    int sz = a.polysize();
+
+    PolyRns r(rns);
+
+    for (int i = 0; i < ntows; i++)
+    {
+        const PolyRns::Tower & t = a.towers[i];
+        PolyRns::Tower u;
+        for (int j = 0; j < sz; j++)
+        {
+            Integer a = modmul(t.v[j], us[i], qs[i]);
+            u.v.push_back(a);
+        }
+        r.towers.push_back(u);
+    }
+
+    return r;
+}
+
+PolyRns poly::PWr(const PolyRns & a)
+{
+    const rns_ns::Rns * rns = a.rns_ptr;
+    vint qs = rns->getQs();
+    vint ms = rns->getMs();
+    //vint us = rns->getUs();
+
+    int ntows = a.ntows();
+    int sz = a.polysize();
+
+    PolyRns r(rns);
+
+    for (int i = 0; i < ntows; i++)
+    {
+        const PolyRns::Tower & t = a.towers[i];
+        PolyRns::Tower u;
+        for (int j = 0; j < sz; j++)
+        {
+            Integer a = modmul(t.v[j], ms[i], qs[i]);
+            u.v.push_back(a);
+        }
+        r.towers.push_back(u);
+    }
+
+    return r;
+}
+
+PolyRns poly::dotR(const PolyRns & a, const PolyRns & b)
+{
+    never;
+    //return PolyRns();
+}
+
 ckks::CtxtP ckks::relinHybP(const Ctxt3P & c, const Param & par, const EkHybP & ek)
 {
     // reference: pages 6,7,8 Polyakov 2021 Approximate...
