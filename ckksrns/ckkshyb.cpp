@@ -115,17 +115,21 @@ ckks::EkHybR::EkHybR(SkR sk, Param p, RndStream & rs,
     int dnum = rext.size();
     auto qs = rext.getQs();
 
-    poly::PolyRns e(rext);
-    da.towers.resize(dnum);
+    //poly::PolyRns e(rext);
+    //da.towers.resize(dnum);
     db.towers.resize(dnum);
-    e.towers.resize(dnum);
+    //e.towers.resize(dnum);
 
-    for (int i = 0; i < dnum; i++)
-    {
-        da.towers[i] = genPolyRqP(sk.n, rs, qs[i]);
-        e.towers[i] = genPolyErP(sk.n, rs);
-        e.towers[i] = rangeUpP(e.towers[i], qs[i]);
-    }
+    rns_ns::RnsForm qrf(rext, 0); // all range
+    da = genPolyRqR(sk.n, rs, qrf, rext);
+    PolyRns e = genPolyErR(sk.n, rs, rext);
+
+    //for (int i = 0; i < dnum; i++)
+    //{
+    //    da.towers[i] = genPolyRqP(sk.n, rs, qs[i]);
+    //    e.towers[i] = genPolyErP(sk.n, rs);
+    //    e.towers[i] = rangeUpP(e.towers[i], qs[i]);
+    //}
 
 
     //auto s2 = mul(s, s);
@@ -157,6 +161,10 @@ ckks::EkHybR::EkHybR(SkR sk, Param p, RndStream & rs,
     ///auto x4 = mul(se, se);
     PolyRns x5 = mul(ds2, PinPQ);
     db = add(x3, x5);
+
+    cout << "AAA " << __func__ << " PQ=" << rext.dynrange_() << " s=" << se << " a=" << da << " e=" << e << " b=" << db << '\n';
+    cout << "AAA2 " << "x1x2x3(s2,ds2)x5 " << x1 << x2 << x3 << s2 << ds2 << x5 << '\n';
+
 }
 
 

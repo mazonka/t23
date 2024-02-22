@@ -23,3 +23,4 @@ void t07_mul();
 void t08_decomp();
 void t09_hyb1();
 void t10_hyb2();
+void t10_hyb2_b1();

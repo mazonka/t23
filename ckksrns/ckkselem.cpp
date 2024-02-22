@@ -503,7 +503,7 @@ ckks::CtxtR ckks::rescaleLevelR(const CtxtR & c, const rns_ns::RnsShrinkRound & 
     return CtxtR(lv - 1, c0, c1);
 }
 
-ckks::CtxtP ckks::relinExt(const Ctxt3P & c, const Param & par, const EkExtP & ek)
+ckks::CtxtP ckks::relinExtP(const Ctxt3P & c, const Param & par, const EkExtP & ek)
 {
     CtxtP r = c.slice(); // slice object
 
@@ -525,7 +525,7 @@ ckks::CtxtP ckks::relinExt(const Ctxt3P & c, const Param & par, const EkExtP & e
     return r;
 }
 
-ckks::CtxtR ckks::relinExt(const Ctxt3R & c, const Param & par, const EkExtR & ek)
+ckks::CtxtR ckks::relinExtR(const Ctxt3R & c, const Param & par, const EkExtR & ek)
 {
     CtxtR r = c.slice(); // slice object
 
@@ -553,7 +553,7 @@ ckks::CtxtR ckks::relinExt(const Ctxt3R & c, const Param & par, const EkExtR & e
 ckks::CtxtP ckks::mulExtP(const CtxtP & a, const CtxtP & b, const Param & p, const EkExtP & ek)
 {
     Ctxt3P c3 = mul3(a, b, p);
-    CtxtP c2 = relinExt(c3, p, ek);
+    CtxtP c2 = relinExtP(c3, p, ek);
     CtxtP c2sc = rescaleLevelP(c2, p);
     return c2sc;
 }
@@ -561,7 +561,7 @@ ckks::CtxtP ckks::mulExtP(const CtxtP & a, const CtxtP & b, const Param & p, con
 ckks::CtxtR ckks::mulExtR(const CtxtR & a, const CtxtR & b, const Param & p, const EkExtR & ek, const rns_ns::RnsShrinkRound & datQ)
 {
     Ctxt3R c3 = mul3(a, b);
-    CtxtR c2 = relinExt(c3, p, ek);
+    CtxtR c2 = relinExtR(c3, p, ek);
     CtxtR c2sc = rescaleLevelR(c2, datQ);
     return c2sc;
 }

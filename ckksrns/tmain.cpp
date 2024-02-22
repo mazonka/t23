@@ -20,105 +20,9 @@ using poly::PolyRns;
 
 
 
-void t05_mul2()
+
+void t10_hyb2_b1()
 {
-    // switch off ntt to
-    ntt::Nttoff nttoff; // FIXME find why
-
-    cout << "\n>>> " << __func__ << '\n';
-
-    using namespace ckks;
-    using namespace std::complex_literals;
-    using rns_ns::RnsMrs;
-
-    Integer delta_(1024);
-    Param param(4, Integer(1024), Integer(delta_), 1);
-    cout << param.print() << '\n';
-
-    vector<cx> a = { 0.8, 0.5 };
-    //vector<cx> a = { 1.0, 0.0 };
-    //vector<cx> a = { 1.5625, 1.5625 };
-
-    cout << "a =" << a << '\n';
-
-    RnsMrs rns(param.vqs);
-    Poly map = encodeP(param, a);
-    PolyRns mar = encodeR(param, a, rns);
-
-    cout << "map = " << map << '\n';
-    cout << "mar = " << mar << '\n';
-
-    RndStream rsP, rsR;
-    SkP skp(rsP, param.penc.n);
-    SkR skr(rsR, param.penc.n, rns);
-
-    auto c3prn = [](string nm, auto c)
-    {
-        cout << nm << " = " << c.c0 << c.c1 << c.c2 << '\n';
-    };
-    auto c2prn = [](string nm, auto c)
-    {
-        cout << nm << " = " << c.c0 << c.c1 << '\n';
-    };
-
-    CtxtP cap = encryptP(skp, map, param, rsP);
-    CtxtR car = encryptR(skr, mar, param, rsR);
-    c2prn("cap", cap);
-    c2prn("car", car);
-
-    Ctxt3P ca3p = mul3(cap, cap, param);
-    c3prn("ca3p", ca3p);
-    Ctxt3R ca3r = mul3(car, car);
-    c3prn("ca3r", ca3r);
-
-    RnsMrs rnsP { 521, 457 };
-    EkExtP ekp(skp, param, rsP, rnsP.dynrange_());
-    RnsMrs rnsext { rns, rns_ns::Rns::plus, rnsP };
-    rns_ns::RnsShrinkRound rshrink(rns, rnsP);
-    EkExtR ekr(skr, param, rsR, rnsext, rshrink);
-
-    CtxtP ca2p = relinExt(ca3p, param, ekp);
-    CtxtR ca2r = relinExt(ca3r, param, ekr);
-    c2prn("ca2p", ca2p);
-    c2prn("ca2r", ca2r);
-
-    {
-        Poly md2p = decryptP(skp, ca2p, param);
-        cout << "md2pU = " << md2p << '\n';
-        PolyRns md2r = decryptR(skr, ca2r, param);
-        cout << "md2rU = " << md2r << '\n';
-        auto a22p = decodeP(param, md2p);
-        auto id = param.penc.idelta;
-        cout << "a22pU =" << roundv(1e-2, a22p * (1. / id)) << '\n';
-        auto a22r = decodeR(param, md2r, rns);
-        cout << "a22rU =" << roundv(1e-2, a22r * (1. / id)) << '\n';
-    }
-
-    CtxtP ca2scP = rescaleLevelP(ca2p, param);
-    c2prn("ca2scP", ca2scP);
-
-    Integer qdrop = param.vqs[ca2r.level];
-    RnsMrs rnsL {qdrop};
-    RnsMrs rnsQ { rns, rns_ns::Rns::minus, rnsL};
-    rns_ns::RnsShrinkRound datQ(rnsQ, rnsL);
-
-    CtxtR ca2scR = rescaleLevelR(ca2r, datQ);
-    c2prn("ca2scR", ca2scR);
-
-    Poly md2p = decryptP(skp, ca2scP, param);
-    cout << "md2p = " << md2p << '\n';
-    PolyRns md2r = decryptR(skr, ca2scR, param);
-    cout << "md2r = " << md2r << '\n';
-    auto a22p = decodeP(param, md2p);
-    cout << "a22p =" << roundv(1e-2, a22p) << '\n';
-    auto a22r = decodeR(param, md2r, rns);
-    cout << "a22r =" << roundv(1e-2, a22r) << '\n';
-}
-
-void t06_mul1()
-{
-    cout << "\n>>> " << __func__ << " use one function\n";
-
     using namespace ckks;
     using namespace std::complex_literals;
 
@@ -131,10 +35,11 @@ void t06_mul1()
     using rns_ns::RnsMrs;
 
     Integer delta_(1024);
-    Param param(4, Integer(1024), Integer(delta_), 1);
+    Param param(2, Integer(1024), Integer(delta_), 1);
     cout << param.print() << '\n';
 
-    vector<cx> a = { 0.8, 0.5 };
+    vector<cx> a = { 0.0 };
+    //vector<cx> a = { 0.8, 0.5 };
 
     cout << "a =" << a << '\n';
 
@@ -145,7 +50,7 @@ void t06_mul1()
     cout << "map = " << map << '\n';
     cout << "mar = " << mar << '\n';
 
-    RndStream rsP, rsR;
+    RndStream rsP, rsR, rsE;
     SkP skp(rsP, param.penc.n);
     SkR skr(rsR, param.penc.n, rns);
 
@@ -156,34 +61,51 @@ void t06_mul1()
 
     CtxtP cap = encryptP(skp, map, param, rsP);
     CtxtR car = encryptR(skr, mar, param, rsR);
+    CtxtR cae = encryptR(skr, mar, param, rsE); // just to use rsE
     c2prn("cap", cap);
     c2prn("car", car);
 
-    RnsMrs rnsP { 521, 457 };
-    EkExtP ekp(skp, param, rsP, rnsP.dynrange_());
+    param.w = 16;
+    EkHybP ekp(1, skp, param, rsP);
+
+    Integer extP = EkHybR::findExtDigit(rns.getQs(), car.c0.polysize());
+    RnsMrs rnsP { extP };
     RnsMrs rnsext { rns, rns_ns::Rns::plus, rnsP };
     rns_ns::RnsShrinkRound rshrink(rns, rnsP);
-    EkExtR ekr(skr, param, rsR, rnsext, rshrink);
+    ///EkHybR ekr(1, skr, param, rsR);
+    EkHybR ekr(skr, param, rsR, rnsext, rshrink);
+    EkExtR eke(skr, param, rsE, rnsext, rshrink);
 
     Integer qdrop = param.vqs[car.level];
     RnsMrs rnsL { qdrop };
     RnsMrs rnsQ { rns, rns_ns::Rns::minus, rnsL };
     rns_ns::RnsShrinkRound datQ(rnsQ, rnsL);  // FIXME embed Rns cascade into params
 
-    CtxtP ca2scP = mulExtP(cap, cap, param, ekp);
-    CtxtR ca2scR = mulExtR(car, car, param, ekr, datQ);
-    c2prn("ca2scP", ca2scP);
-    c2prn("ca2scR", ca2scR);
+    CtxtP ca2p = mulHybP(cap, cap, param, ekp);
+    c2prn("ca2p", ca2p);
 
-    Poly md2p = decryptP(skp, ca2scP, param);
-    cout << "md2p = " << md2p << '\n';
-    PolyRns md2r = decryptR(skr, ca2scR, param);
+    CtxtR ca2r = mulHybR(car, car, param, ekr, datQ);
+    c2prn("ca2r", ca2r);
+
+    CtxtR ca2e = mulExtR(car, car, param, eke, datQ);
+    c2prn("ca2e", ca2e);
+
+    Poly md2p = decryptP(skp, ca2p, param);
+    //md2p = rangeUpP(md2p, 1024); // FIXME cludge
+    cout << "md2p = " << md2p << " (1-x)"  << '\n';
+    auto md2r = decryptR(skr, ca2r, param);
     cout << "md2r = " << md2r << '\n';
+    auto md2e = decryptR(skr, ca2e, param);
+    cout << "md2e = " << md2e << '\n';
+
     auto a22p = decodeP(param, md2p);
     cout << "a22p =" << roundv(1e-2, a22p) << '\n';
     auto a22r = decodeR(param, md2r, rns);
     cout << "a22r =" << roundv(1e-2, a22r) << '\n';
+    auto a22e = decodeR(param, md2e, rns);
+    cout << "a22e =" << roundv(1e-2, a22e) << '\n';
 }
+
 
 void t10_hyb2()
 {
@@ -259,97 +181,3 @@ void t10_hyb2()
     cout << "a22r =" << roundv(1e-2, a22r) << '\n';
 }
 
-void t08_decomp()
-{
-    cout << "\n>>> " << __func__ << '\n';
-
-    using namespace ckks;
-    using namespace std::complex_literals;
-    using rns_ns::RnsMrs;
-
-    Integer delta_(64);
-    Param param(4, Integer(1024), Integer(delta_), 1);
-    cout << param.print() << '\n';
-
-    //vector<cx> a = { 0.5, 2.0 };
-    //vector<cx> b = { 3.0, 1.0 };
-    vector<cx> a = { 0.5, 1.0 };
-    vector<cx> b = { 1.0, 0.8 };
-
-    cout << "a =" << a << '\n';
-    cout << "b =" << b << '\n';
-
-    Poly map = encodeP(param, a);
-    Poly mbp = encodeP(param, b);
-
-    RnsMrs rns(param.vqs);
-    PolyRns mar = encodeR(param, a, rns);
-    PolyRns mbr = encodeR(param, b, rns);
-
-    cout << "map = " << map << '\n';
-    cout << "mar = " << mar << '\n';
-
-    cout << "mbp = " << mbp << '\n';
-    cout << "mbr = " << mbr << '\n';
-
-    {
-        cout << "\nsimple\n";
-        auto dynrange = rns.dynrange_();
-        Poly mcScp = poly::mul_simple(map, mbp);
-        //mcScp = rangeDownP(mcScp, dynrange);
-        PolyRns mcScr = poly::mul_simple(mar, mbr);
-
-        cout << "mcScp = " << mcScp << '\n';
-        cout << "mcScpU= " << rangeUpP(mcScp, dynrange) << '\n';
-        cout << "mcScr = " << mcScr << '\n';
-
-        Poly mcp = rescaleRound(mcScp, param.penc.idelta);
-        PolyRns mcr = rescaleRoundRns(mcScr, param.penc.idelta);
-
-        cout << "mcp = ma*mb = " << mcp << '\n';
-        cout << "mcr = ma*mb = " << mcr << '\n';
-
-        vector<cx> cp = decodeP(param, mcp);
-        cout << "cp =" << roundv(1e-2, cp) << '\n';
-        vector<cx> cr = decodeR(param, mcr, rns);
-        cout << "cr =" << roundv(1e-2, cr) << '\n';
-    }
-
-    auto qL = param.qL_();
-
-    param.w = 16;
-
-    {
-        cout << "\ndecomposition\n";
-        auto maUp = rangeUpP(map, qL);
-        auto mbUp = rangeUpP(mbp, qL);
-        Poly mcScp = poly::mul(maUp, mbUp, qL);
-        cout << "mcScp = " << mcScp << '\n';
-        PolyRns mcScr = poly::mul(mar, mbr);
-        cout << "mcScr = " << mcScr << '\n';
-
-        cout << '\n';
-        if (param.w == Integer(0)) never;
-
-        auto wdap = poly::WDp(maUp, param.w, qL);
-        cout << "wdap ="; for (auto x : wdap) cout << " " << x; cout << '\n';
-
-        auto pwbp = poly::PWp(mbUp, param.w, qL);
-        cout << "pwbp ="; for (auto x : pwbp) cout << " " << x; cout << '\n';
-
-        PolyRns wdar = poly::WDr(mar);
-        cout << "wdar = " << wdar << '\n';
-
-        PolyRns pwbr = poly::PWr(mbr);
-        cout << "pdbr = " << pwbr << '\n';
-
-
-        Poly abp = poly::dotP(wdap, pwbp, qL);
-        cout << "abp = " << abp << '\n';
-        cout << "<p> = " << mcScp << '\n';
-
-        PolyRns abr = poly::dotR(wdar, pwbr);
-        cout << "abr = " << abr << '\n';
-    }
-
-}
