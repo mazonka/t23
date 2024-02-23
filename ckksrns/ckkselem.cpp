@@ -809,11 +809,13 @@ Integer ckks::RndStream::getEr()
     //return Integer(0); // FIXME *************************************
     int & a = er;
     ++a;
-    if (a == 0) return Integer(0); // FIXME *************************************
-    if (a == 1) return Integer(0); // FIXME *************************************
-    if (a == 2) return Integer(0); // FIXME *************************************
-    if (a == 3) return Integer(1); // FIXME *************************************
-    if (a == 4) return Integer(0); // critical if0 then correct FIXME *************************************
+
+    //if (a == 0) return Integer(0); // FIXME *************************************
+    //if (a == 1) return Integer(0); // FIXME *************************************
+    //if (a == 2) return Integer(0); // FIXME *************************************
+    //if (a == 3) return Integer(1); // FIXME *************************************
+    //if (a == 4) return Integer(0); // critical if0 then correct FIXME *************************************
+
     //if (a == 5) return Integer(0); // FIXME *************************************
     //if (a == 6) return Integer(0); // FIXME *************************************
     //if (a == 7) return Integer(0); // FIXME *************************************
