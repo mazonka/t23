@@ -122,7 +122,7 @@ ckks::EkHybR::EkHybR(SkR sk, Param p, RndStream & rs,
 
     rns_ns::RnsForm qrf(rext, 0); // all range
     da = genPolyRqR(sk.n, rs, qrf, rext);
-    PolyRns e = genPolyErR(sk.n, rs, rext);
+    PolyRns e1 = genPolyErR(sk.n, rs, rext);
 
     //for (int i = 0; i < dnum; i++)
     //{
@@ -150,6 +150,7 @@ ckks::EkHybR::EkHybR(SkR sk, Param p, RndStream & rs,
     auto se = s.modswap(rext);
     auto s2 = mul(se, se);
     auto ds2 = poly::PWr(s2);
+    auto e = poly::PWr(e1);
 
     auto PinPQ = rshrink.PinQ.rebaseAdd(rext);
 

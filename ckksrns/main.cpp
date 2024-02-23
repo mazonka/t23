@@ -1264,10 +1264,10 @@ void t08_decomp()
 
 
         Poly abp = poly::dotP(wdap, pwbp, qL);
+        PolyRns abr = poly::dotR(wdar, pwbr);
+
         cout << "abp = " << abp << '\n';
         cout << "<p> = " << mcScp << '\n';
-
-        PolyRns abr = poly::dotR(wdar, pwbr);
         cout << "abr = " << abr << '\n';
     }
 
