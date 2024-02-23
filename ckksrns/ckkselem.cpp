@@ -7,6 +7,8 @@ using std::cout;
 using poly::Poly;
 using poly::PolyRns;
 
+const bool D = false;
+
 poly::Poly ckks::encodeP(const Param & p, const std::vector<cx> & v)
 {
     std::vector<Integer> m;
@@ -203,8 +205,8 @@ ckks::CtxtP ckks::encryptP(SkP sk, Poly m, Param p, RndStream & rs)
     auto x3 = add(x2, e, q);
     auto x4 = add(x3, mR, q);
 
-    cout << "AAA P s=" << s << " a=" << a << " e=" << e << " m=" << mR << '\n';
-    cout << "AAA P x1=" << x1 << " x4=" << x4 << '\n';
+    if(D) cout << "AAA P s=" << s << " a=" << a << " e=" << e << " m=" << mR << '\n';
+    if(D) cout << "AAA P x1=" << x1 << " x4=" << x4 << '\n';
 
     CtxtP r(p.levels, x4, a);
     return r;
@@ -232,8 +234,8 @@ ckks::CtxtR ckks::encryptR(SkR sk, PolyRns mr, Param p, RndStream & rs)
     auto x3 = add(x2, e);
     auto x4 = add(x3, mr);
 
-    cout << "AAA R s=" << s << " a=" << a << " e=" << e << " m=" << mr << '\n';
-    cout << "AAA R x1=" << x1 << " x4=" << x4 << '\n';
+    if(D) cout << "AAA R s=" << s << " a=" << a << " e=" << e << " m=" << mr << '\n';
+    if(D) cout << "AAA R x1=" << x1 << " x4=" << x4 << '\n';
 
     CtxtR r(p.levels, x4, a);
     return r;
@@ -260,8 +262,8 @@ ckks::CtxtP ckks::encryptP(PkP pk, Poly m, Param p, RndStream & rs)
     auto x4 = mul(pk.p1, u, q);
     auto x5 = add(x4, e1, q);
 
-    ///cout << "AAA P e0=" << e0 << " a=" << a << " e=" << e << " m=" << mr << '\n';
-    ///cout << "AAA P x1=" << x1 << " x4=" << x4 << '\n';
+    //cout << "AAA P e0=" << e0 << " a=" << a << " e=" << e << " m=" << mr << '\n';
+    //cout << "AAA P x1=" << x1 << " x4=" << x4 << '\n';
 
     CtxtP r(p.levels, x3, x5);
     return r;
@@ -519,7 +521,7 @@ ckks::CtxtP ckks::relinExtP(const Ctxt3P & c, const Param & par, const EkExtP & 
     auto pb = div(d2ekb, ek.P, pq);
     r.c0 = add(r.c0, pb, q);
     r.c1 = add(r.c1, pa, q);
-    cout << "AAA " << __func__ << " d2=" << d2 << '\n'
+    if(D) cout << "AAA " << __func__ << " d2=" << d2 << '\n'
          << " ek:a:b=" << ek.a << ek.b << '\n'
          << " d2ek=" << d2eka << d2ekb << '\n';
     return r;
@@ -544,7 +546,7 @@ ckks::CtxtR ckks::relinExtR(const Ctxt3R & c, const Param & par, const EkExtR & 
     auto pb = d2ekb.shrink(ek.rshrink);
     r.c0 = add(r.c0, pb);
     r.c1 = add(r.c1, pa);
-    cout << "AAA " << __func__ << " d2=" << d2 << '\n'
+    if(D) cout << "AAA " << __func__ << " d2=" << d2 << '\n'
          << " ek:a:b=" << ek.a << ek.b << '\n'
          << " d2ek=" << d2eka << d2ekb << '\n';
     return r;
@@ -900,8 +902,8 @@ ckks::EkExtP::EkExtP(SkP sk, Param p, RndStream & rs, Integer newp)
     Poly x5 = mul(x4, P, q);
     b = add(x3, x5, q);
 
-    cout << "AAA " << __func__ << " PQ=" << q << " s=" << s << " a=" << a << " e=" << e << " b=" << b << '\n';
-    cout << "AAA2 " << "x1x2x3x4x5 " << x1 << x2 << x3 << x4 << x5 << '\n';
+    if(D) cout << "AAA " << __func__ << " PQ=" << q << " s=" << s << " a=" << a << " e=" << e << " b=" << b << '\n';
+    if(D) cout << "AAA2 " << "x1x2x3x4x5 " << x1 << x2 << x3 << x4 << x5 << '\n';
 }
 
 string ckks::Param::print() const
@@ -952,6 +954,6 @@ ckks::EkExtR::EkExtR(SkR sk, Param p, RndStream & rs, rns_ns::Rns & rext,
     PolyRns x5 = mul(x4, PinPQ);
     b = add(x3, x5);
 
-    cout << "AAA " << __func__ << " PQ=" << rext.dynrange_() << " s=" << se << " a=" << a << " e=" << e << " b=" << b << '\n';
-    cout << "AAA2 " << "x1x2x3x4x5 " << x1 << x2 << x3 << x4 << x5 << '\n';
+    if(D) cout << "AAA " << __func__ << " PQ=" << rext.dynrange_() << " s=" << se << " a=" << a << " e=" << e << " b=" << b << '\n';
+    if(D) cout << "AAA2 " << "x1x2x3x4x5 " << x1 << x2 << x3 << x4 << x5 << '\n';
 }

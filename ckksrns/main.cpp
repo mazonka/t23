@@ -21,7 +21,7 @@ using poly::PolyRns;
 int main()
 try
 {
-    if (0)
+    if (1)
     {
         t01_rns1();
         t02_rns2();
@@ -45,7 +45,7 @@ try
     if (1)
     {
         t08_decomp();
-        //    t09_hyb1();
+        // t09_hyb1();
         t10_hyb2_b1();
         t10_hyb2();
     }

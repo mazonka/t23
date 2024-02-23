@@ -13,6 +13,8 @@ using std::cout;
 using poly::Poly;
 using poly::PolyRns;
 
+const bool D = false;
+
 ckks::EkHybP::EkHybP(int lev, SkP sk, Param p, RndStream & rs) : level(lev)
 {
     if (p.w == 0) nevers("Digit size is not set; assign size to 'w'");
@@ -163,8 +165,8 @@ ckks::EkHybR::EkHybR(SkR sk, Param p, RndStream & rs,
     PolyRns x5 = mul(ds2, PinPQ);
     db = add(x3, x5);
 
-    cout << "AAA " << __func__ << " PQ=" << rext.dynrange_() << " s=" << se << " a=" << da << " e=" << e << " b=" << db << '\n';
-    cout << "AAA2 " << "x1x2x3(s2,ds2)x5 " << x1 << x2 << x3 << s2 << ds2 << x5 << '\n';
+    if(D) cout << "AAA " << __func__ << " PQ=" << rext.dynrange_() << " s=" << se << " a=" << da << " e=" << e << " b=" << db << '\n';
+    if(D) cout << "AAA2 " << "x1x2x3(s2,ds2)x5 " << x1 << x2 << x3 << s2 << ds2 << x5 << '\n';
 
 }
 
@@ -293,8 +295,8 @@ PolyRns poly::dotR(const PolyRns & a, const PolyRns & b)
         Poly s = poly::mul(at, bt, qs[i]);
         ///r = poly::add(r, s, q);
         r.towers.push_back(s);
-        cout << "AAA " << __func__ << i << " r=" << r.towers.back() << '\n';
-        cout << " at,bt,s " << at << bt << s << '\n';
+        if(D) cout << "AAA " << __func__ << i << " r=" << r.towers.back() << '\n';
+        if(D) cout << " at,bt,s " << at << bt << s << '\n';
     }
     return r;
 }
@@ -353,11 +355,11 @@ ckks::CtxtR ckks::relinHybR(const Ctxt3R & c, const Param & p, const EkHybR & ek
     auto pb = d2ekb.shrink(ek.rshrink);
     r.c0 = add(r.c0, pb);
     r.c1 = add(r.c1, pa);
-    cout << "AAA " << __func__ << " d2=" << d2 << '\n';
-    cout << " ek:a:b=" << ek.da << ek.db << '\n';     
-    cout << " wd2=" << wd2 << '\n';
-    cout << " d2ek=" << d2eka << d2ekb << '\n';
-    cout << " pa,pb=" << pa << pb << '\n';
+    if(D) cout << "AAA " << __func__ << " d2=" << d2 << '\n';
+    if(D) cout << " ek:a:b=" << ek.da << ek.db << '\n';     
+    if(D) cout << " wd2=" << wd2 << '\n';
+    if(D) cout << " d2ek=" << d2eka << d2ekb << '\n';
+    if(D) cout << " pa,pb=" << pa << pb << '\n';
     return r;
 }
 
