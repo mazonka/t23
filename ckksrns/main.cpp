@@ -28,7 +28,8 @@ try
         t03_rns3();
         t04_rns4();
         ///t04_rnsYes1();
-        t05_rebase();
+        t05_rebase1();
+        t05_rebase2();
         t00_ntt();
         t01_encode();
         t02_encSk();
@@ -902,7 +903,7 @@ void t05_mul2_v2()
     cout << "a22r =" << roundv(1e-2, a22r) << '\n';
 }
 
-void t05_rebase()
+void t05_rebase1()
 {
     int step = 4;
 
@@ -1009,6 +1010,40 @@ void t05_rebase()
             //if (iz != i) never;
             cout << i << '\t' << iy << '\t' << x.values() << '\t'
                  << y.values() << '\t' << (i / cbP) << '\n';
+        }
+    }
+}
+
+void t05_rebase2()
+{
+    using namespace rns_ns;
+
+    {
+        RnsMrs rnsQ{ 5, 7 };
+        RnsMrs rnsP{ 23 };
+        RnsMrs rnsQP(rnsP, Rns::plus, rnsQ);
+
+        auto dynq = rnsQ.dynrange_();
+        RnsShrinkRound data(rnsQ, rnsP);
+        for (Integer i = 0; i < dynq; i += 1)
+        {
+            RnsForm x(rnsQ, i);
+            auto y1 = x.rebaseAny(rnsQP);
+            Integer iy1 = y1.blend_();
+            auto z1 = y1.rebaseShrinkRound(data);
+            Integer iz1 = z1.blend_();
+
+            auto y2 = x.rebaseAnyFbc(rnsQP);
+            Integer iy2 = y2.blend_();
+            auto z2 = y2.rebaseShrinkRound(data);
+            Integer iz2 = z2.blend_();
+
+            cout << i << '\t' << iy1 
+                << '\t' << x.values() << '\t' << y1.values()
+                << " | " << iy2 << '\t' << y2.values()
+                << " | " << iz1 << '\t' << z1.values()
+                << " | " << iz2 << '\t' << z2.values()
+                << '\n';
         }
     }
 }

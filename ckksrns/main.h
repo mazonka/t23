@@ -6,7 +6,8 @@ void t03_rns3();
 void t04_rns4();
 
 void t04_rnsYes1();
-void t05_rebase();
+void t05_rebase1();
+void t05_rebase2();
 
 void t00_ntt();
 void t01_encode();

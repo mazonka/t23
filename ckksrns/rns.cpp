@@ -361,6 +361,34 @@ rns_ns::RnsForm rns_ns::RnsForm::rebaseAny(const Rns & nr) const
     return r;
 }
 
+rns_ns::RnsForm rns_ns::RnsForm::rebaseAnyFbc(const Rns& nr) const
+{
+    /*
+    * returns x+rQ in new rns
+    */
+
+    ///vint myqs = prns->getQs();
+    vint nrqs = nr.getQs();
+    auto Mis = prns->getMs_();
+
+    auto chis = prns->to_chi(v);
+    vint rems;
+    for (auto nq : nrqs)
+    {
+        Integer s = 0;
+        for (int i = 0; i != (int)Mis.size(); i++)
+        {
+            auto Mi = Mis[i]%nq;
+            auto chi = chis[i]%nq;
+            auto a = modmul(chi, Mi, nq);
+            s = modadd(s, a, nq);
+        }
+        rems.push_back(s);
+    }
+
+    return RnsForm(nr, rems);
+}
+
 rns_ns::RnsForm rns_ns::RnsForm::baseSwap(const Rns & newRns) const
 {
     bool neg = isnegative();
@@ -398,6 +426,8 @@ rns_ns::RnsForm rns_ns::RnsForm::rebaseShrinkRound(const RnsShrinkRound & d) con
     * | P^-1_q ( X_q + |P/2|_q - [ |X_p+P/2|_p ]_q ) |_q
     * constants: P^-1_q=P1q, P/2_q=P2q, P/2=|P/2|_p= P2
     */
+
+    // FIXME - try flooring by subtracting small Rns form
 
     RnsForm X_q = rebaseCut(d.Q);
     RnsForm X_p = rebaseCut(d.P);
@@ -487,6 +517,14 @@ void rns_ns::Rns::div2exact(vint & v) const
         if (x % 2) x = (x + qs[i]) / 2;
         else x /= 2;
     }
+}
+
+vint rns_ns::Rns::to_chi(const vint& v) const
+{
+    const int n = size();
+    vint chi(n);
+    for (int i = 0; i < n; i++) chi[i] = modmul(v[i], us[i], qs[i]);
+    return chi;
 }
 
 rns_ns::RnsShrinkRound::RnsShrinkRound(const Rns & aQ, const Rns & aP)

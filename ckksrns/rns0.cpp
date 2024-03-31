@@ -895,10 +895,11 @@ std::pair<int, int> rns_ns::RnsYes::rank_v1(const vint & v) const
 
 vint rns_ns::RnsYes::rank_2chi(const vint & v) const
 {
-    const int n = size();
-    vint chi(n);
-    for (int i = 0; i < n; i++) chi[i] = modmul(v[i], us[i], qs[i]);
-    return chi;
+    ///const int n = size();
+    ///vint chi(n);
+    ///for (int i = 0; i < n; i++) chi[i] = modmul(v[i], us[i], qs[i]);
+    ///return chi;
+    return to_chi(v);
 }
 
 vint rns_ns::RnsYes::rank_cube_v2(const vint & v) const

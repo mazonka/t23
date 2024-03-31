@@ -255,7 +255,7 @@ PolyRns poly::PWr(const PolyRns & a)
 {
     const rns_ns::Rns * rns = a.rns_ptr;
     vint qs = rns->getQs();
-    vint ms = rns->getMs();
+    vint ms = rns->getMsq(); // Mi's in q
     //vint us = rns->getUs();
 
     int ntows = a.ntows();
@@ -363,6 +363,29 @@ ckks::CtxtR ckks::relinHybR(const Ctxt3R & c, const Param & p, const EkHybR & ek
     return r;
 }
 
+ckks::CtxtR ckks::relinHybR_fbc(const Ctxt3R& c, const Param& p, const EkHybR& ek)
+{
+    CtxtR r = c.slice(); // slice object
+
+    const auto& rext = *ek.da.rns_ptr;
+    auto d2 = c.c2.rebase_fbc(rext);
+
+    PolyRns wd2 = poly::WDr(d2);
+    auto d2eka = poly::dotR(wd2, ek.da);
+    auto d2ekb = poly::dotR(wd2, ek.db);
+
+    auto pa = d2eka.shrink(ek.rshrink);
+    auto pb = d2ekb.shrink(ek.rshrink);
+    r.c0 = add(r.c0, pb);
+    r.c1 = add(r.c1, pa);
+    if (D) cout << "AAA " << __func__ << " d2=" << d2 << '\n';
+    if (D) cout << " ek:a:b=" << ek.da << ek.db << '\n';
+    if (D) cout << " wd2=" << wd2 << '\n';
+    if (D) cout << " d2ek=" << d2eka << d2ekb << '\n';
+    if (D) cout << " pa,pb=" << pa << pb << '\n';
+    return r;
+}
+
 ckks::CtxtP ckks::mulHybP(const CtxtP & a, const CtxtP & b, const Param & p, const EkHybP & ek)
 {
     Ctxt3P c3 = mul3(a, b, p);
@@ -379,4 +402,11 @@ ckks::CtxtR ckks::mulHybR(const CtxtR & a, const CtxtR & b, const Param & p, con
     return c2sc;
 }
 
+ckks::CtxtR ckks::mulHybR_fbc(const CtxtR& a, const CtxtR& b, const Param& p, const EkHybR& ek, const rns_ns::RnsShrinkRound& datQ)
+{
+    Ctxt3R c3 = mul3(a, b);
+    CtxtR c2 = relinHybR_fbc(c3, p, ek);
+    CtxtR c2sc = rescaleLevelR(c2, datQ);
+    return c2sc;
+}
 

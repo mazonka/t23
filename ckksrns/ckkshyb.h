@@ -52,7 +52,9 @@ namespace ckks
 {
 CtxtP relinHybP(const Ctxt3P & c, const Param & p, const EkHybP & ek);
 CtxtR relinHybR(const Ctxt3R & c, const Param & p, const EkHybR & ek);
+CtxtR relinHybR_fbc(const Ctxt3R& c, const Param& p, const EkHybR& ek);
 CtxtP mulHybP(const CtxtP & a, const CtxtP & b, const Param & p, const EkHybP & ek);
-CtxtR mulHybR(const CtxtR & a, const CtxtR & b, const Param & p, const EkHybR & ek, const rns_ns::RnsShrinkRound & datQ);
+CtxtR mulHybR(const CtxtR& a, const CtxtR& b, const Param& p, const EkHybR& ek, const rns_ns::RnsShrinkRound& datQ);
+CtxtR mulHybR_fbc(const CtxtR& a, const CtxtR& b, const Param& p, const EkHybR& ek, const rns_ns::RnsShrinkRound& datQ);
 } // ckks
 

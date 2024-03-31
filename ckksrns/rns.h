@@ -47,10 +47,13 @@ class Rns
         virtual vint mrs(const vint & v) const = 0;
 
         vint getQs() const { return qs; }
-        vint getMs() const { return ms; }
+        ///vint getMs() const { return ms; }
         vint getUs() const { return us; }
+        vint getMsq() const { return ms; }
+        vint getMs_() const { return Ms_; }
 
         void div2exact(vint & v) const;
+        vint to_chi(const vint& x) const;
 
     public:
         enum Op { minus, plus };
@@ -72,7 +75,7 @@ class RnsForm
         RnsForm(const Rns & r, Integer x) : prns(&r), v(r.split(x)) {}
         RnsForm(const Rns & r, int zero, double val) : prns(&r), v(r.splitFmod(val)) {}
         RnsForm(const Rns & r, const vint & u) : prns(&r), v(u) {}
-        RnsForm(const Rns & r, int zero, vint vs);
+        RnsForm(const Rns & r, int zero, vint vs); // FIXME why we need this??
 
         RnsForm(const Rns * r, Integer x) : prns(r), v(r->split(x)) {}
         RnsForm(const Rns * r, const vint & u) : prns(r), v(u) {}
@@ -149,6 +152,8 @@ class RnsForm
         // ABCDE -> ABC with round div: Q=ABC P=DE: QP->Q
         ///RnsForm rebaseShrinkRound(const Rns& Q, const Rns& P) const;
         RnsForm rebaseShrinkRound(const RnsShrinkRound & dat) const;
+
+        RnsForm rebaseAnyFbc(const Rns& newRns) const;
 };
 
 struct RnsShrinkRound

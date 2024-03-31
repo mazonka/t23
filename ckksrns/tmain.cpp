@@ -179,5 +179,17 @@ void t10_hyb2()
     cout << "a22p =" << roundv(1e-2, a22p) << '\n';
     auto a22r = decodeR(param, md2r, rns);
     cout << "a22r =" << roundv(1e-2, a22r) << '\n';
+
+    if (1) // FastBConv
+    {
+        CtxtR ca2f = mulHybR_fbc(car, car, param, ekr, datQ);
+        c2prn("ca2f", ca2f);
+
+        auto md2f = decryptR(skr, ca2f, param);
+        cout << "md2f = " << md2f << '\n';
+
+        auto a22f = decodeR(param, md2f, rns);
+        cout << "a22f =" << roundv(1e-2, a22f) << '\n';
+    }
 }
 
