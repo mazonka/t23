@@ -427,17 +427,19 @@ rns_ns::RnsForm rns_ns::RnsForm::rebaseShrinkRound(const RnsShrinkRound & d) con
     * constants: P^-1_q=P1q, P/2_q=P2q, P/2=|P/2|_p= P2
     */
 
-    // FIXME2 - try flooring by subtracting small Rns form
+	RnsForm X_q = rebaseCut(d.Q);
+	RnsForm X_p = rebaseCut(d.P);
+	auto a = X_q + d.P2q;
+	auto b1 = X_p + d.P2p;
 
-    RnsForm X_q = rebaseCut(d.Q);
-    RnsForm X_p = rebaseCut(d.P);
-    auto a = X_q + d.P2q;
-    auto b1 = X_p + d.P2p;
+    // (Att) this call is cheap when P=p (P has 1 modulus)
+    // no need to do rebase in HW - just set P component in Q
+    // FIXME TODO write this function explicitly
     auto b2 = b1.rebaseAny(d.Q);
-    auto c = a - b2;
-    auto e = d.P1q * c;
 
-    return e;
+    auto c = a - b2;
+	auto e = d.P1q * c;
+	return e;
 }
 
 rns_ns::RnsForm & rns_ns::RnsForm::operator*=(const rns_ns::RnsForm & b)

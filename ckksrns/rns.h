@@ -75,7 +75,9 @@ class RnsForm
         RnsForm(const Rns & r, Integer x) : prns(&r), v(r.split(x)) {}
         RnsForm(const Rns & r, int zero, double val) : prns(&r), v(r.splitFmod(val)) {}
         RnsForm(const Rns & r, const vint & u) : prns(&r), v(u) {}
-        RnsForm(const Rns & r, int zero, vint vs); // FIXME2 why we need this??
+
+        // Construction of big number represented by a product (not used)
+        RnsForm(const Rns & r, int zero, vint vs);
 
         RnsForm(const Rns * r, Integer x) : prns(r), v(r->split(x)) {}
         RnsForm(const Rns * r, const vint & u) : prns(r), v(u) {}
