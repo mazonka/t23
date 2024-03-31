@@ -155,7 +155,7 @@ vint rns_ns::RnsMrs::mrs(const vint & x) const
     {
         auto q = qs[k];
         v[k] = x[k];
-        for (int j = 0; j < sz; j++) // FIXME j<k
+        for (int j = 0; j < sz; j++) // FIXME2 j<k
         {
             if (k > j)
             {

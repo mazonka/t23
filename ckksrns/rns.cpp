@@ -427,7 +427,7 @@ rns_ns::RnsForm rns_ns::RnsForm::rebaseShrinkRound(const RnsShrinkRound & d) con
     * constants: P^-1_q=P1q, P/2_q=P2q, P/2=|P/2|_p= P2
     */
 
-    // FIXME - try flooring by subtracting small Rns form
+    // FIXME2 - try flooring by subtracting small Rns form
 
     RnsForm X_q = rebaseCut(d.Q);
     RnsForm X_p = rebaseCut(d.P);
