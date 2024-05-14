@@ -49,6 +49,8 @@ Poly mul(Poly a, Integer b, Integer q);
 Poly div(Poly a, Integer b, Integer q);
 Poly scaleUp(const Poly & a, Integer Q, Integer P, Integer PQ);
 
+Poly automorph(const Poly& a);
+
 } //poly
 
 namespace mod
@@ -106,6 +108,8 @@ PolyRns neg(PolyRns a);
 PolyRns add(PolyRns a, PolyRns b);
 PolyRns mul_simple(const PolyRns & a, const PolyRns & b);
 PolyRns rescaleRoundRns(const PolyRns & a, Integer idelta);
+
+PolyRns automorph(const PolyRns& a);
 
 } // poly
 

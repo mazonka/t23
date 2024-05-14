@@ -19,16 +19,33 @@ struct EkHybP
     string print() const;
 };
 
+struct AukHybP
+{
+    int level;
+    Integer P, ql;
+    poly::Dpoly db, da;
+    AukHybP(int level, SkP sk, Param p, RndStream& rs);
+    string print() const;
+};
+
 struct EkHybR
 {
-    ///int level;
-    ///Integer P, ql;
     poly::PolyRns db, da;
     rns_ns::RnsShrinkRound rshrink;
     EkHybR(SkR sk, Param p, RndStream & rs, rns_ns::Rns & rext, rns_ns::RnsShrinkRound rshrink);
     string print() const;
 
     static Integer findExtDigit(const vint & v, int n);
+};
+
+struct AukHybR
+{
+    poly::PolyRns db, da;
+    rns_ns::RnsShrinkRound rshrink;
+    AukHybR(SkR sk, Param p, RndStream& rs, rns_ns::Rns& rext, rns_ns::RnsShrinkRound rshrink);
+    string print() const;
+
+    static Integer findExtDigit(const vint& v, int n);
 };
 
 } // ckks
@@ -56,5 +73,11 @@ CtxtR relinHybR_fbc(const Ctxt3R& c, const Param& p, const EkHybR& ek);
 CtxtP mulHybP(const CtxtP & a, const CtxtP & b, const Param & p, const EkHybP & ek);
 CtxtR mulHybR(const CtxtR& a, const CtxtR& b, const Param& p, const EkHybR& ek, const rns_ns::RnsShrinkRound& datQ);
 CtxtR mulHybR_fbc(const CtxtR& a, const CtxtR& b, const Param& p, const EkHybR& ek, const rns_ns::RnsShrinkRound& datQ);
+
+CtxtP aswHybP(const CtxtP& c, const Param& p, const AukHybP& ek);
+CtxtP autHybP(const CtxtP& a, const Param& p, const AukHybP& ek);
+
+CtxtR aswHybR(const CtxtR& c, const Param& p, const AukHybR& uk);
+CtxtR autHybR(const CtxtR& a, const Param& p, const AukHybR& uk, const rns_ns::RnsShrinkRound& datQ);
 } // ckks
 

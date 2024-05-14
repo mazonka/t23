@@ -226,6 +226,18 @@ poly::Poly poly::scaleUp(const Poly & a, Integer Q, Integer P, Integer PQ)
     return r;
 }
 
+poly::Poly poly::automorph(const Poly& a)
+{
+    Poly r = a;
+    int sz = a.size();
+    for (int i = 0; i < sz; i++)
+    {
+        auto j = 5 * i % sz;
+        r.v[j] = a.v[i];
+    }
+    return r;
+}
+
 
 // Poly RNS
 
@@ -452,6 +464,22 @@ poly::PolyRns poly::rescaleRoundRns(const PolyRns & a, Integer idelta)
         else
             x = (x + d2) / idelta;
         r += RnsForm(*a.rns_ptr, 0, x);
+    }
+    return r;
+}
+
+poly::PolyRns poly::automorph(const PolyRns& a)
+{
+    int ntows = a.ntows();
+    PolyRns r(a.rns_ptr);
+    ///vint bv = b.values();
+    ///const rns_ns::Rns* rns = a.rns_ptr;
+    ///if (rns != b.rns()) never;
+    ///vint qs = rns->getQs();
+    for (int i = 0; i < ntows; i++)
+    {
+        Poly p = automorph(a.towers[i]);
+        r.towers.push_back(p);
     }
     return r;
 }

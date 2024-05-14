@@ -405,6 +405,28 @@ ckks::Ctxt3P ckks::mul3(const CtxtP & a, const CtxtP & b, Param p)
     return Ctxt3P(c01, c2);
 }
 
+ckks::CtxtP ckks::automorphP(const CtxtP& a, Param p)
+{
+    int lv = a.level;
+    auto q = p.q_(lv);
+
+    auto r = a;
+    r.c0 = automorph(r.c0);
+    r.c1 = automorph(r.c1);
+    return r;
+}
+
+ckks::CtxtR ckks::automorphR(const CtxtR& a, Param p)
+{
+    int lv = a.level;
+    auto q = p.q_(lv);
+
+    auto r = a;
+    r.c0 = automorph(r.c0);
+    r.c1 = automorph(r.c1);
+    return r;
+}
+
 ckks::Ctxt3R ckks::mul3(const CtxtR & a, const CtxtR & b)
 {
     int lv = a.level;

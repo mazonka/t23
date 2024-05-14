@@ -64,6 +64,58 @@ ckks::EkHybP::EkHybP(int lev, SkP sk, Param p, RndStream & rs) : level(lev)
     }
 }
 
+ckks::AukHybP::AukHybP(int lev, SkP sk, Param p, RndStream& rs) : level(lev)
+{
+    if (p.w == 0) nevers("Digit size is not set; assign size to 'w'");
+    Poly s = sk.s;
+    int n = (int)s.size();
+    Integer in(n), iU(1);
+
+    ql = p.q_(level);
+    P = p.w;
+
+    // ntt requires inversion n in PQ
+    for (int i = 0; i < 10000000; i++, ++P)
+        if (gcdT(P, in) == iU)
+            break;
+
+    auto PQl = P * ql;
+    const auto& q = PQl;
+
+    int dnum = poly::calc_dnumP(p.w, q); // ql - doesnt work, error in paper
+
+    //Poly a = genPolyRq(sk.n, rs, q);
+    //Poly e = genPolyEr(sk.n, rs);
+
+    da.resize(dnum);
+    db.resize(dnum);
+    poly::Dpoly e(dnum);
+    for (int i = 0; i < dnum; i++)
+    {
+        da[i] = genPolyRqP(sk.n, rs, q);
+        e[i] = genPolyErP(sk.n, rs);
+        e[i] = rangeUpP(e[i], q);
+    }
+
+    s = rangeUpP(s, q);
+    ///auto s2 = mul(s, s, q);
+    auto sa = automorph(s);
+    ///auto ds2 = poly::PWp(s2, p.w, q);
+    auto dsa = poly::PWp(sa, p.w, q);
+
+    // b = -a*SK + e + P*SKa
+    // a = a
+    for (int i = 0; i < dnum; i++)
+    {
+        auto x1 = neg(da[i], q);
+        auto x2 = mul(x1, s, q);
+        auto x3 = add(x2, e[i], q);
+        ///Poly x5 = mul(ds2[i], P, q);
+        Poly x5 = mul(dsa[i], P, q);
+        db[i] = add(x3, x5, q);
+    }
+}
+
 Integer ckks::EkHybR::findExtDigit(const vint & qs, int n)
 {
     Integer in(n), iU(1);
@@ -170,6 +222,97 @@ ckks::EkHybR::EkHybR(SkR sk, Param p, RndStream & rs,
 
 }
 
+ckks::AukHybR::AukHybR(SkR sk, Param p, RndStream& rs,
+    rns_ns::Rns& rext, rns_ns::RnsShrinkRound rshr)
+    ///: level(lev)
+    : da(rext), db(rext), rshrink(rshr)
+{
+    ///if (p.w == 0) nevers("Digit size is not set; assign size to 'w'");
+    PolyRns s = sk.s;
+    ///int n = s.polysize();
+    ///Integer in(n), iU(1);
+
+    ///ql = p.q_(level);
+    ///P = p.w;
+
+    ///vint qs = p.vqs;
+    ///qs.resize(level+1);
+
+    ///P = *std::max_element(qs.begin(),qs.end());
+    ///++P;
+
+    // find P for extension
+    //for (int i = 0; i < 10000000; i++, ++P)
+    //{
+    //    if (gcdT(P, in) != iU) continue; // ntt requires inversion n in PQ
+    //    if (!isPrime(P)) continue;
+    //    break;
+    //}
+
+    ///qs.push_back(P);
+
+    //auto PQl = P * ql;
+    //const auto& q = PQl;
+
+    //int dnum = poly::calc_dnumP(p.w, q); // ql - doesnt work, error in paper
+    int dnum = rext.size();
+    auto qs = rext.getQs();
+
+    //poly::PolyRns e(rext);
+    //da.towers.resize(dnum);
+    db.towers.resize(dnum);
+    //e.towers.resize(dnum);
+
+    rns_ns::RnsForm qrf(rext, 0); // all range
+    da = genPolyRqR(sk.n, rs, qrf, rext);
+    PolyRns e1 = genPolyErR(sk.n, rs, rext);
+
+    //for (int i = 0; i < dnum; i++)
+    //{
+    //    da.towers[i] = genPolyRqP(sk.n, rs, qs[i]);
+    //    e.towers[i] = genPolyErP(sk.n, rs);
+    //    e.towers[i] = rangeUpP(e.towers[i], qs[i]);
+    //}
+
+
+    //auto s2 = mul(s, s);
+    //auto ds2 = poly::PWr(s2);
+
+    //// b = -a*SK + e + P*SK*SK
+    //// a = a
+    //for (int i = 0; i < dnum; i++)
+    //{
+    //    auto q = qs[i];
+    //    auto x1 = neg(da.towers[i], q);
+    //    auto x2 = mul(x1, s, q);
+    //    auto x3 = add(x2, e[i], q);
+    //    Poly x5 = mul(ds2[i], P, q);
+    //    db[i] = add(x3, x5, q);
+    //}
+
+    // b = -a*SK + e + P*SKa
+    // a = a
+    auto se = s.modswap(rext);
+    ///auto s2 = mul(se, se);
+    ///auto ds2 = poly::PWr(s2);
+    auto sa = automorph(se);
+    auto dsa = poly::PWr(sa);
+    auto e = poly::PWr(e1);
+
+    auto PinPQ = rshrink.PinQ.rebaseAdd(rext);
+
+    auto x1 = neg(da);
+    auto x2 = mul(x1, se);
+    auto x3 = add(x2, e);
+    ///auto x4 = mul(se, se);
+    ///PolyRns x5 = mul(ds2, PinPQ);
+    PolyRns x5 = mul(dsa, PinPQ);
+    db = add(x3, x5);
+
+    if (D) cout << "AAA " << __func__ << " PQ=" << rext.dynrange_() << " s=" << se << " a=" << da << " e=" << e << " b=" << db << '\n';
+    ///if (D) cout << "AAA2 " << "x1x2x3(s2,ds2)x5 " << x1 << x2 << x3 << s2 << ds2 << x5 << '\n';
+    if (D) cout << "AAA2 " << "x1x2x3(s2,ds2)x5 " << x1 << x2 << x3 << sa << dsa << x5 << '\n';
+}
 
 string ckks::EkHybP::print() const
 {
@@ -327,6 +470,39 @@ ckks::CtxtP ckks::relinHybP(const Ctxt3P & c, const Param & par, const EkHybP & 
     return r;
 }
 
+ckks::CtxtP ckks::aswHybP(const CtxtP& c, const Param& par, const AukHybP& ek)
+{
+    // ct=(c0,c1)==(b,a)
+    // Mult: <= (d0,d1)+KeySwitch(d2)
+    // Autm: <= (bk,0 )+KeySwitch(ak)
+
+    CtxtP r = c;
+
+    Integer q = par.q_(c.level);
+    if (q != ek.ql) nevers("wrong relin Q level");
+
+    auto w = par.w;
+    auto P = ek.P;
+    Integer pq = P * q;
+
+    auto bk = automorph(c.c0);
+    auto ak = automorph(c.c1);
+
+    ///auto d2 = rangeUpP(c.c1, q); // c2->c1
+    auto ak2 = rangeUpP(ak, q);
+
+    ///poly::Dpoly wd2 = poly::WDp(d2, w, pq);
+    poly::Dpoly wd2 = poly::WDp(ak2, w, pq);
+    auto d2eka = poly::dotP(wd2, ek.da, pq);
+    auto d2ekb = poly::dotP(wd2, ek.db, pq);
+    auto pa = div(d2eka, ek.P, pq);
+    auto pb = div(d2ekb, ek.P, pq);
+    r.c0 = add(bk, pb, q);
+    r.c1 = pa;
+
+    return r;
+}
+
 ckks::CtxtR ckks::relinHybR(const Ctxt3R & c, const Param & p, const EkHybR & ek)
 {
     CtxtR r = c.slice(); // slice object
@@ -363,6 +539,41 @@ ckks::CtxtR ckks::relinHybR(const Ctxt3R & c, const Param & p, const EkHybR & ek
     return r;
 }
 
+ckks::CtxtR ckks::aswHybR(const CtxtR& c, const Param& p, const AukHybR& ek)
+{
+    // ct=(c0,c1)==(b,a)
+    // Mult: <= (d0,d1)+KeySwitch(d2)
+    // Autm: <= (bk,0 )+KeySwitch(ak)
+
+    CtxtR r = c;
+
+    auto bk = automorph(c.c0);
+    auto ak = automorph(c.c1);
+
+    const auto& rext = *ek.da.rns_ptr;
+    ///auto d2 = c.c1.rebase(rext); // c2->c1
+    auto ak2 = ak.rebase(rext); // c2->c1
+
+    ///PolyRns wd2 = poly::WDr(d2);
+    PolyRns wd2 = poly::WDr(ak2);
+    auto d2eka = poly::dotR(wd2, ek.da);
+    auto d2ekb = poly::dotR(wd2, ek.db);
+
+    auto pa = d2eka.shrink(ek.rshrink);
+    auto pb = d2ekb.shrink(ek.rshrink);
+    ///r.c0 = add(r.c0, pb);
+    ///r.c1 = add(r.c1, pa);
+    r.c0 = add(bk, pb);
+    r.c1 = pa;
+
+    if (D) cout << "AAA " << __func__ << " ak2=" << ak2 << '\n';
+    if (D) cout << " ek:a:b=" << ek.da << ek.db << '\n';
+    if (D) cout << " wd2=" << wd2 << '\n';
+    if (D) cout << " d2ek=" << d2eka << d2ekb << '\n';
+    if (D) cout << " pa,pb=" << pa << pb << '\n';
+    return r;
+}
+
 ckks::CtxtR ckks::relinHybR_fbc(const Ctxt3R& c, const Param& p, const EkHybR& ek)
 {
     CtxtR r = c.slice(); // slice object
@@ -394,7 +605,16 @@ ckks::CtxtP ckks::mulHybP(const CtxtP & a, const CtxtP & b, const Param & p, con
     return c2sc;
 }
 
-ckks::CtxtR ckks::mulHybR(const CtxtR & a, const CtxtR & b, const Param & p, const EkHybR & ek, const rns_ns::RnsShrinkRound & datQ)
+ckks::CtxtP ckks::autHybP(const CtxtP& a, const Param& p, const AukHybP& uk)
+{
+    CtxtP c3 = automorphP(a, p);
+    CtxtP c2 = aswHybP(c3, p, uk);
+    CtxtP c2sc = rescaleLevelP(c2, p);
+    return c2sc;
+}
+
+ckks::CtxtR ckks::mulHybR(const CtxtR & a, const CtxtR & b, const Param & p, 
+    const EkHybR & ek, const rns_ns::RnsShrinkRound & datQ)
 {
     Ctxt3R c3 = mul3(a, b);
     CtxtR c2 = relinHybR(c3, p, ek);
@@ -402,7 +622,17 @@ ckks::CtxtR ckks::mulHybR(const CtxtR & a, const CtxtR & b, const Param & p, con
     return c2sc;
 }
 
-ckks::CtxtR ckks::mulHybR_fbc(const CtxtR& a, const CtxtR& b, const Param& p, const EkHybR& ek, const rns_ns::RnsShrinkRound& datQ)
+ckks::CtxtR ckks::autHybR(const CtxtR& a, const Param& p, 
+    const AukHybR& uk, const rns_ns::RnsShrinkRound& datQ)
+{
+    CtxtR c3 = automorphR(a, p);
+    CtxtR c2 = aswHybR(c3, p, uk);
+    CtxtR c2sc = rescaleLevelR(c2, datQ);
+    return c2sc;
+}
+
+ckks::CtxtR ckks::mulHybR_fbc(const CtxtR& a, const CtxtR& b, 
+    const Param& p, const EkHybR& ek, const rns_ns::RnsShrinkRound& datQ)
 {
     Ctxt3R c3 = mul3(a, b);
     CtxtR c2 = relinHybR_fbc(c3, p, ek);

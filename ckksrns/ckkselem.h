@@ -184,6 +184,9 @@ CtxtP rescaleLevelP(const CtxtP & c, Param par);
 CtxtR rescale(const CtxtR & c, Integer idelta, Param par);
 CtxtR rescaleLevelR(const CtxtR & c, const rns_ns::RnsShrinkRound & dat);
 
+CtxtP automorphP(const CtxtP& a, Param p);
+CtxtR automorphR(const CtxtR& a, Param p);
+
 struct EkExtP
 {
     Integer P;
