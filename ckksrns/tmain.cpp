@@ -207,10 +207,16 @@ void t11_aut1()
     using rns_ns::RnsMrs;
 
     Integer delta_(1024);
-    Param param(4, Integer(1024), Integer(delta_), 1);
+    //vector<cx> a = { 0.8, 0.5, 0.4, 0.3 };
+    vector<cx> a =
+    //{ 0.8 };
+    { 0.8, 0.5 };
+    //{ 0.8, 0.5, 0.4, 0.3 };
+    Param param(a.size()*2, Integer(1024), Integer(delta_), 1);
     cout << param.print() << '\n';
 
-    vector<cx> a = { 0.8, 0.5 };
+
+    ///vector<cx> a = { 0.8, 0.5, 0.4, 0.3 };
 
     cout << "a =" << a << '\n';
 
@@ -236,15 +242,14 @@ void t11_aut1()
     c2prn("car", car);
 
     param.w = 16;
-    EkHybP ekp(1, skp, param, rsP);
+    //EkHybP ekp(1, skp, param, rsP);
     AukHybP aukp(1, skp, param, rsP);
 
     Integer extP = EkHybR::findExtDigit(rns.getQs(), car.c0.polysize());
     RnsMrs rnsP{ extP };
     RnsMrs rnsext{ rns, rns_ns::Rns::plus, rnsP };
     rns_ns::RnsShrinkRound rshrink(rns, rnsP);
-    ///EkHybR ekr(1, skr, param, rsR);
-    EkHybR ekr(skr, param, rsR, rnsext, rshrink);
+    //EkHybR ekr(skr, param, rsR, rnsext, rshrink);
     AukHybR aukr(skr, param, rsR, rnsext, rshrink);
 
     Integer qdrop = param.vqs[car.level];

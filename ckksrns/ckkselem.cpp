@@ -15,7 +15,8 @@ poly::Poly ckks::encodeP(const Param & p, const std::vector<cx> & v)
     auto vl = v;
     int sz = (int)v.size();
     auto n = p.penc.n;
-    if (2 * sz != n) never;
+    if (2 * sz != n) 
+        nevers("vector size does not match size in param");
 
     for (int i = 0; i < sz; i++)
         vl.push_back(conj(v[sz - 1 - i]));

@@ -43,12 +43,16 @@ try
         //    t07_mul();
     }
 
-    if (1)
+    if (0)
     {
         t08_decomp();
         // t09_hyb1();
         t10_hyb2_b1();
         t10_hyb2();
+    }
+
+    if (1)
+    {
         t11_aut1();
     }
 }

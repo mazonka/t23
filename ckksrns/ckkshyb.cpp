@@ -609,8 +609,9 @@ ckks::CtxtP ckks::autHybP(const CtxtP& a, const Param& p, const AukHybP& uk)
 {
     CtxtP c3 = automorphP(a, p);
     CtxtP c2 = aswHybP(c3, p, uk);
-    CtxtP c2sc = rescaleLevelP(c2, p);
-    return c2sc;
+    return c2;
+    ///CtxtP c2sc = rescaleLevelP(c2, p);
+    ///return c2sc;
 }
 
 ckks::CtxtR ckks::mulHybR(const CtxtR & a, const CtxtR & b, const Param & p, 
@@ -627,8 +628,9 @@ ckks::CtxtR ckks::autHybR(const CtxtR& a, const Param& p,
 {
     CtxtR c3 = automorphR(a, p);
     CtxtR c2 = aswHybR(c3, p, uk);
-    CtxtR c2sc = rescaleLevelR(c2, datQ);
-    return c2sc;
+    return c2;
+    ///CtxtR c2sc = rescaleLevelR(c2, datQ);
+    ///return c2sc;
 }
 
 ckks::CtxtR ckks::mulHybR_fbc(const CtxtR& a, const CtxtR& b, 
