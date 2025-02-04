@@ -80,6 +80,8 @@ struct PolyRns
 
     void operator+=(Integer x);
     void operator+=(rns_ns::RnsForm x);
+    void assign(int index, Integer x);
+    void assign(int index, rns_ns::RnsForm x);
     ///    int size() const { return (int)v.size(); }
     PolyRns(const rns_ns::Rns & r) : rns_ptr(&r) {}
     PolyRns(const rns_ns::Rns * p) : rns_ptr(p) {}

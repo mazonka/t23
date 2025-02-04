@@ -209,8 +209,9 @@ void t11_aut1()
     Integer delta_(1024);
     //vector<cx> a = { 0.8, 0.5, 0.4, 0.3 };
     vector<cx> a =
+    { 0.0 };
     //{ 0.8 };
-    { 0.8, 0.5 };
+    //{ 0.8, 0.5 };
     //{ 0.8, 0.5, 0.4, 0.3 };
     Param param(a.size()*2, Integer(1024), Integer(delta_), 1);
     cout << param.print() << '\n';
@@ -241,7 +242,7 @@ void t11_aut1()
     c2prn("cap", cap);
     c2prn("car", car);
 
-    param.w = 16;
+    param.w = 32;
     //EkHybP ekp(1, skp, param, rsP);
     AukHybP aukp(1, skp, param, rsP);
 

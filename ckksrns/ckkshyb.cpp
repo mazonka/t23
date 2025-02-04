@@ -13,7 +13,8 @@ using std::cout;
 using poly::Poly;
 using poly::PolyRns;
 
-const bool D = false;
+const bool D = true;
+const bool DD = !true;
 
 ckks::EkHybP::EkHybP(int lev, SkP sk, Param p, RndStream & rs) : level(lev)
 {
@@ -135,71 +136,18 @@ Integer ckks::EkHybR::findExtDigit(const vint & qs, int n)
 
 ckks::EkHybR::EkHybR(SkR sk, Param p, RndStream & rs,
                      rns_ns::Rns & rext, rns_ns::RnsShrinkRound rshr)
-///: level(lev)
     : da(rext), db(rext), rshrink(rshr)
 {
-    ///if (p.w == 0) nevers("Digit size is not set; assign size to 'w'");
     PolyRns s = sk.s;
-    ///int n = s.polysize();
-    ///Integer in(n), iU(1);
 
-    ///ql = p.q_(level);
-    ///P = p.w;
-
-    ///vint qs = p.vqs;
-    ///qs.resize(level+1);
-
-    ///P = *std::max_element(qs.begin(),qs.end());
-    ///++P;
-
-    // find P for extension
-    //for (int i = 0; i < 10000000; i++, ++P)
-    //{
-    //    if (gcdT(P, in) != iU) continue; // ntt requires inversion n in PQ
-    //    if (!isPrime(P)) continue;
-    //    break;
-    //}
-
-    ///qs.push_back(P);
-
-    //auto PQl = P * ql;
-    //const auto& q = PQl;
-
-    //int dnum = poly::calc_dnumP(p.w, q); // ql - doesnt work, error in paper
     int dnum = rext.size();
     auto qs = rext.getQs();
 
-    //poly::PolyRns e(rext);
-    //da.towers.resize(dnum);
     db.towers.resize(dnum);
-    //e.towers.resize(dnum);
 
     rns_ns::RnsForm qrf(rext, 0); // all range
     da = genPolyRqR(sk.n, rs, qrf, rext);
     PolyRns e1 = genPolyErR(sk.n, rs, rext);
-
-    //for (int i = 0; i < dnum; i++)
-    //{
-    //    da.towers[i] = genPolyRqP(sk.n, rs, qs[i]);
-    //    e.towers[i] = genPolyErP(sk.n, rs);
-    //    e.towers[i] = rangeUpP(e.towers[i], qs[i]);
-    //}
-
-
-    //auto s2 = mul(s, s);
-    //auto ds2 = poly::PWr(s2);
-
-    //// b = -a*SK + e + P*SK*SK
-    //// a = a
-    //for (int i = 0; i < dnum; i++)
-    //{
-    //    auto q = qs[i];
-    //    auto x1 = neg(da.towers[i], q);
-    //    auto x2 = mul(x1, s, q);
-    //    auto x3 = add(x2, e[i], q);
-    //    Poly x5 = mul(ds2[i], P, q);
-    //    db[i] = add(x3, x5, q);
-    //}
 
     auto se = s.modswap(rext);
     auto s2 = mul(se, se);
@@ -213,105 +161,58 @@ ckks::EkHybR::EkHybR(SkR sk, Param p, RndStream & rs,
     auto x1 = neg(da);
     auto x2 = mul(x1, se);
     auto x3 = add(x2, e);
-    ///auto x4 = mul(se, se);
     PolyRns x5 = mul(ds2, PinPQ);
     db = add(x3, x5);
 
     if(D) cout << "AAA " << __func__ << " PQ=" << rext.dynrange_() << " s=" << se << " a=" << da << " e=" << e << " b=" << db << '\n';
     if(D) cout << "AAA2 " << "x1x2x3(s2,ds2)x5 " << x1 << x2 << x3 << s2 << ds2 << x5 << '\n';
-
 }
 
 ckks::AukHybR::AukHybR(SkR sk, Param p, RndStream& rs,
     rns_ns::Rns& rext, rns_ns::RnsShrinkRound rshr)
-    ///: level(lev)
     : da(rext), db(rext), rshrink(rshr)
 {
-    ///if (p.w == 0) nevers("Digit size is not set; assign size to 'w'");
     PolyRns s = sk.s;
-    ///int n = s.polysize();
-    ///Integer in(n), iU(1);
-
-    ///ql = p.q_(level);
-    ///P = p.w;
-
-    ///vint qs = p.vqs;
-    ///qs.resize(level+1);
-
-    ///P = *std::max_element(qs.begin(),qs.end());
-    ///++P;
-
-    // find P for extension
-    //for (int i = 0; i < 10000000; i++, ++P)
-    //{
-    //    if (gcdT(P, in) != iU) continue; // ntt requires inversion n in PQ
-    //    if (!isPrime(P)) continue;
-    //    break;
-    //}
-
-    ///qs.push_back(P);
-
-    //auto PQl = P * ql;
-    //const auto& q = PQl;
-
-    //int dnum = poly::calc_dnumP(p.w, q); // ql - doesnt work, error in paper
     int dnum = rext.size();
     auto qs = rext.getQs();
 
-    //poly::PolyRns e(rext);
-    //da.towers.resize(dnum);
     db.towers.resize(dnum);
-    //e.towers.resize(dnum);
 
     rns_ns::RnsForm qrf(rext, 0); // all range
     da = genPolyRqR(sk.n, rs, qrf, rext);
     PolyRns e1 = genPolyErR(sk.n, rs, rext);
 
-    //for (int i = 0; i < dnum; i++)
-    //{
-    //    da.towers[i] = genPolyRqP(sk.n, rs, qs[i]);
-    //    e.towers[i] = genPolyErP(sk.n, rs);
-    //    e.towers[i] = rangeUpP(e.towers[i], qs[i]);
-    //}
-
-
-    //auto s2 = mul(s, s);
-    //auto ds2 = poly::PWr(s2);
-
-    //// b = -a*SK + e + P*SK*SK
-    //// a = a
-    //for (int i = 0; i < dnum; i++)
-    //{
-    //    auto q = qs[i];
-    //    auto x1 = neg(da.towers[i], q);
-    //    auto x2 = mul(x1, s, q);
-    //    auto x3 = add(x2, e[i], q);
-    //    Poly x5 = mul(ds2[i], P, q);
-    //    db[i] = add(x3, x5, q);
-    //}
-
+    // FIXME16
+    if (1) // testing for rns bug
+    {
+        da.assign(0, 0);
+        da.assign(1, 0);
+        e1.assign(0, 1);
+        e1.assign(1, 0);
+    }
     // b = -a*SK + e + P*SKa
     // a = a
-    auto se = s.modswap(rext);
+    poly::PolyRns ske = s.modswap(rext);
     ///auto s2 = mul(se, se);
     ///auto ds2 = poly::PWr(s2);
-    auto sa = automorph(se);
-    auto dsa = poly::PWr(sa);
+    auto su = automorph(ske);
+    auto dsu = poly::PWr(su);
     auto e = poly::PWr(e1);
 
     auto PinPQ = rshrink.PinQ.rebaseAdd(rext);
 
     auto x1 = neg(da);
-    auto x2 = mul(x1, se);
+    auto x2 = mul(x1, ske);
     auto x3 = add(x2, e);
     ///auto x4 = mul(se, se);
     ///PolyRns x5 = mul(ds2, PinPQ);
-    PolyRns x5 = mul(dsa, PinPQ);
+    PolyRns x5 = mul(dsu, PinPQ);
     db = add(x3, x5);
 
-    if (D) cout << "AAA " << __func__ << " PQ=" << rext.dynrange_() << " s=" << se << " a=" << da << " e=" << e << " b=" << db << '\n';
+    if (D) cout << "AAA " << __func__ << " PQ=" << rext.dynrange_() 
+        << " ske=" << ske << " a=" << da << " e1=" << e1 << " e=" << e << " b=" << db << '\n';
     ///if (D) cout << "AAA2 " << "x1x2x3(s2,ds2)x5 " << x1 << x2 << x3 << s2 << ds2 << x5 << '\n';
-    if (D) cout << "AAA2 " << "x1x2x3(s2,ds2)x5 " << x1 << x2 << x3 << sa << dsa << x5 << '\n';
+    if (D) cout << "AAA2 " << "x1x2x3(dsu)x5 " << x1 << x2 << x3 << dsu << x5 << '\n';
 }
 
 string ckks::EkHybP::print() const
@@ -438,8 +339,8 @@ PolyRns poly::dotR(const PolyRns & a, const PolyRns & b)
         Poly s = poly::mul(at, bt, qs[i]);
         ///r = poly::add(r, s, q);
         r.towers.push_back(s);
-        if(D) cout << "AAA " << __func__ << i << " r=" << r.towers.back() << '\n';
-        if(D) cout << " at,bt,s " << at << bt << s << '\n';
+        if(DD) cout << "AAA " << __func__ << i << " r=" << r.towers.back() << '\n';
+        if(DD) cout << " at,bt,s " << at << bt << s << '\n';
     }
     return r;
 }
@@ -517,7 +418,7 @@ ckks::CtxtR ckks::relinHybR(const Ctxt3R & c, const Param & p, const EkHybR & ek
     //auto d2 = scaleUp(c.c2, q, P, pq);
     ///auto d2 = rangeUpP(c.c2, q);
     const auto & rext = *ek.da.rns_ptr;
-    auto d2 = c.c2.rebase(rext);
+    auto d2 = c.c2.rebase(rext); // modswap?
 
     //auto d2eka = mul(d2, ek.a);
     //auto d2ekb = mul(d2, ek.b);
@@ -551,26 +452,38 @@ ckks::CtxtR ckks::aswHybR(const CtxtR& c, const Param& p, const AukHybR& ek)
     auto ak = automorph(c.c1);
 
     const auto& rext = *ek.da.rns_ptr;
-    ///auto d2 = c.c1.rebase(rext); // c2->c1
-    auto ak2 = ak.rebase(rext); // c2->c1
+    ///auto d2 = c.c2.rebase(rext);
+    auto ak2 = ak.rebase(rext);
+    //auto ak2 = ak.modswap(rext); ??
+
+    if (D) cout << "AAA " << __func__ << " ak2=" << ak2 << '\n';
+    if (D) cout << "AAA " << "bk,ak " << bk << ak << '\n';
+    if (D) cout << " ek:a:b=" << ek.da << ek.db << '\n';
 
     ///PolyRns wd2 = poly::WDr(d2);
     PolyRns wd2 = poly::WDr(ak2);
+
+    if (D) cout << " wd2=" << wd2 << '\n';
+
     auto d2eka = poly::dotR(wd2, ek.da);
     auto d2ekb = poly::dotR(wd2, ek.db);
+    if (D) cout << " d2ek=" << d2eka << d2ekb << '\n';
 
     auto pa = d2eka.shrink(ek.rshrink);
     auto pb = d2ekb.shrink(ek.rshrink);
+    if (D) cout << " pa,pb=" << pa << pb << '\n';
+
     ///r.c0 = add(r.c0, pb);
     ///r.c1 = add(r.c1, pa);
     r.c0 = add(bk, pb);
     r.c1 = pa;
+    if (D) cout << " r.c0c1 " << r.c0 << r.c1 << '\n';
 
-    if (D) cout << "AAA " << __func__ << " ak2=" << ak2 << '\n';
-    if (D) cout << " ek:a:b=" << ek.da << ek.db << '\n';
-    if (D) cout << " wd2=" << wd2 << '\n';
-    if (D) cout << " d2ek=" << d2eka << d2ekb << '\n';
-    if (D) cout << " pa,pb=" << pa << pb << '\n';
+    //if (D) cout << "AAA " << __func__ << " ak2=" << ak2 << '\n';
+    //if (D) cout << " ek:a:b=" << ek.da << ek.db << '\n';
+    //if (D) cout << " wd2=" << wd2 << '\n';
+    //if (D) cout << " d2ek=" << d2eka << d2ekb << '\n';
+    //if (D) cout << " pa,pb=" << pa << pb << '\n';
     return r;
 }
 

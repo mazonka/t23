@@ -259,6 +259,22 @@ void poly::PolyRns::operator+=(rns_ns::RnsForm x)
         towers[i] += x.values()[i];
 }
 
+void poly::PolyRns::assign(int index, Integer x)
+{
+    rns_ns::RnsForm rf(rns_ptr, x);
+    assign(index,rf);
+}
+
+void poly::PolyRns::assign(int index, rns_ns::RnsForm x)
+{
+    if (!x.match(rns_ptr)) never;
+    int intows = rns_ptr->size();
+    if (intows != (int)towers.size()) never;
+
+    for (int i = 0; i < intows; i++)
+        towers[i].v[index] = x.values()[i];
+}
+
 poly::PolyRns::PolyRns(const rns_ns::Rns * r, int n, Integer i)
     : rns_ptr(r)
 {

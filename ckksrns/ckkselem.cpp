@@ -7,7 +7,7 @@ using std::cout;
 using poly::Poly;
 using poly::PolyRns;
 
-const bool D = false;
+const bool D = true;
 
 poly::Poly ckks::encodeP(const Param & p, const std::vector<cx> & v)
 {
@@ -207,7 +207,7 @@ ckks::CtxtP ckks::encryptP(SkP sk, Poly m, Param p, RndStream & rs)
     auto x4 = add(x3, mR, q);
 
     if(D) cout << "AAA P s=" << s << " a=" << a << " e=" << e << " m=" << mR << '\n';
-    if(D) cout << "AAA P x1=" << x1 << " x4=" << x4 << '\n';
+    if(D) cout << "AAA P x1=" << x1 << " x2=" << x2 << " x3=" << x3 << " x4=" << x4 << '\n';
 
     CtxtP r(p.levels, x4, a);
     return r;
@@ -223,6 +223,14 @@ ckks::CtxtR ckks::encryptR(SkR sk, PolyRns mr, Param p, RndStream & rs)
     PolyRns a = genPolyRqR(sk.n, rs, q, rns);
     PolyRns e = genPolyErR(sk.n, rs, rns);
 
+    if (1) // FIXME16
+    {
+        e.assign(0, 1);
+        e.assign(1, 0);
+        a.assign(0, 1000000);
+        a.assign(1, 0);
+    }
+
     // no need to range since rns
     //s = rangeUpP(s, q);
     //e = rangeUpP(e, q);
@@ -236,7 +244,7 @@ ckks::CtxtR ckks::encryptR(SkR sk, PolyRns mr, Param p, RndStream & rs)
     auto x4 = add(x3, mr);
 
     if(D) cout << "AAA R s=" << s << " a=" << a << " e=" << e << " m=" << mr << '\n';
-    if(D) cout << "AAA R x1=" << x1 << " x4=" << x4 << '\n';
+    if(D) cout << "AAA R x1=" << x1 << " x2=" << x2 << " x3=" << x3 << " x4=" << x4 << '\n';
 
     CtxtR r(p.levels, x4, a);
     return r;
@@ -678,6 +686,11 @@ ckks::SkR::SkR(RndStream & rs, int sz, const rns_ns::Rns & rns):
 {
     ///n = sz;
     ///s = genPolyR2R(n, rs);
+    if (1) // FIXME16
+    {
+        s.assign(0, 0);
+        s.assign(1, 0);
+    }
 }
 
 Integer ckks::RndStream::getRqSeed()
@@ -710,7 +723,7 @@ Integer ckks::getRq(RndStream & rs, Integer q0)
     //    return (b % q);
     //}
 
-    if (0) return Integer(0);
+    if (0) return Integer(0); // FIXME
     Integer b0 = rs.getRqSeed();
     //b += (b + q0 / 100) * (q0 / 10);
     //return (b % q0);
@@ -787,7 +800,7 @@ rns_ns::RnsForm ckks::getRqRns(RndStream & rs, const rns_ns::RnsForm & fqm)
     }
 
     auto rns = fqm.rns();
-    //if (0) return RnsForm(rns, 0);
+    if (0) return RnsForm(rns, 0); // FIXME
     Integer b = rs.getRqSeed();
     RnsForm fb(rns, b), fq { fqm };
     //fq.setM();
@@ -817,7 +830,7 @@ rns_ns::RnsForm ckks::getRqRns(RndStream & rs, const rns_ns::RnsForm & fqm)
 
 int ckks::RndStream::getR2()
 {
-    if (0) return 0;
+    if (0) return 0; // FIXME
     int & a = r2;
     ++a;
 
@@ -839,8 +852,7 @@ Integer ckks::RndStream::getEr()
     //if (a == 1) return Integer(0); // FIXME *************************************
     //if (a == 2) return Integer(0); // FIXME *************************************
     //if (a == 3) return Integer(1); // FIXME *************************************
-    //if (a == 4) return Integer(0); // critical if0 then correct FIXME *************************************
-
+    //if (a == 4) return Integer(0); // FIXME *************************************
     //if (a == 5) return Integer(0); // FIXME *************************************
     //if (a == 6) return Integer(0); // FIXME *************************************
     //if (a == 7) return Integer(0); // FIXME *************************************
